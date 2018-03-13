@@ -22,6 +22,7 @@ from sqlalchemy.orm import sessionmaker
 
 Session = sessionmaker()
 
+
 def connect(url, debug=False, init=False):
     """
     Returns a sqlalchemy.Connection

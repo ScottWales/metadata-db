@@ -4,16 +4,16 @@ from setuptools import setup, find_packages
 import versioneer
 
 setup(
-        name = 'metadb',
-        packages = find_packages('src'),
-        package_dir = {'': 'src'},
+        name='metadb',
+        packages=find_packages('src'),
+        package_dir={'': 'src'},
         version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
 
-        install_requires = [
+        install_requires=[
             'sqlalchemy',
             ],
-        entry_points = {
+        entry_points={
             'console_scripts': [
                 ]}
         )
