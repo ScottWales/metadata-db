@@ -1,0 +1,20 @@
+language: python
+python:
+    - '2.7'
+    - '3.6'
+install:
+    - pip install --upgrade pytest coverage codeclimate-test-reporter
+    - pip install .
+script:
+    - coverage run --source metadb -m py.test
+after_success:
+    - codeclimate-test-reporter
+# deploy:
+#   provider: pypi
+#   user:
+#   password:
+#     secure: 
+#   on:
+#     tags: true
+#     repo: {{cookiecutter.github_account}}/{{cookiecutter.repo_name}}
+#   distributions: "sdist bdist_wheel"
