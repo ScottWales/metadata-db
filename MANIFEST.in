@@ -1,0 +1,2 @@
+include versioneer.py
+include src/metadb/_version.py

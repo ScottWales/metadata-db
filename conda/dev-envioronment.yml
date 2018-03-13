@@ -1,0 +1,11 @@
+name: metadb-dev
+
+channels:
+    - conda-forge
+    - defaults
+
+dependencies:
+    - python
+    - sqlalchemy
+    - pytest
+    - sphinx
