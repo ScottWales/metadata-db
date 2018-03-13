@@ -17,19 +17,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import print_function
-import metadb.db as db
-import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-@pytest.fixture(scope='session')
-def database():
-    conn = db.connect('sqlite:///:memory:', debug=True, init=True)
-    yield conn
-    conn.close()
+Session = sessionmaker()
 
-@pytest.fixture
-def session(database):
-    trans = database.begin()
-    session = db.Session(bind=database)
-    yield session
-    session.close()
-    trans.rollback()
+def connect(url, debug=False, init=False):
+    """
+    Returns a sqlalchemy.Connection
+    """
+    engine = create_engine(url, echo=debug)
+
+    if init:
+        from archive.model import Base
+        Base.metadata.create_all(engine)
+
+    Session.configure(bind=engine)
+
+    return engine.connect()
