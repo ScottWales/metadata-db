@@ -14,7 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import print_function
-import xarray
+from .model import *
+import netCDF4
 
 def read_netcdf(path, session):
-    d = xarray.open_dataset(path)
+    data = netCDF4.Dataset(path, mode='r')
+
+    meta = Metadata()
+    session.add(meta)
+
+    session.add([
+        Dimension(name=d.name, size=d.size, meta=meta)
+        for d in data.dimensions])
