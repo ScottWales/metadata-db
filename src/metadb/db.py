@@ -29,7 +29,7 @@ def connect(url, debug=False, init=False):
     engine = create_engine(url, echo=debug)
 
     if init:
-        from archive.model import Base
+        from .model import Base
         Base.metadata.create_all(engine)
 
     Session.configure(bind=engine)
