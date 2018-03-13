@@ -3,7 +3,7 @@ python:
     - '2.7'
     - '3.6'
 install:
-    - pip install --upgrade pytest coverage<4.4 codeclimate-test-reporter
+    - pip install --upgrade pytest 'coverage<4.4' codeclimate-test-reporter
     - pip install .
 script:
     - coverage run --source metadb -m py.test
