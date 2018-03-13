@@ -16,8 +16,12 @@
 from __future__ import print_function
 from .model import *
 import netCDF4
+import six
 
 def read_netcdf(path, session):
+    """
+    Import a netCDF file's metadata into the DB
+    """
     data = netCDF4.Dataset(path, mode='r')
 
     meta = Metadata()
@@ -25,4 +29,6 @@ def read_netcdf(path, session):
 
     session.add([
         Dimension(name=d.name, size=d.size, meta=meta)
-        for d in data.dimensions])
+        for d in six.items(data.dimensions)])
+
+    return meta
