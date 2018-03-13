@@ -3,12 +3,16 @@ python:
     - '2.7'
     - '3.6'
 install:
-    - pip install --upgrade pytest 'coverage<4.4' codeclimate-test-reporter
+    - pip install --upgrade pytest coverage
     - pip install .
+before_script:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build
 script:
     - coverage run --source metadb -m py.test
-after_success:
-    - codeclimate-test-reporter
+after_script:
+    - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 # deploy:
 #   provider: pypi
 #   user:
