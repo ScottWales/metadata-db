@@ -17,5 +17,6 @@ setup(
             ],
         entry_points={
             'console_scripts': [
+                'metadb = metadb.cli:cli',
                 ]}
         )

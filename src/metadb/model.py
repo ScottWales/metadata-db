@@ -24,6 +24,7 @@ from sqlalchemy.ext.orderinglist import OrderingList
 
 Base = declarative_base()
 
+# Many to many links
 var_to_attr = Table('var_to_attr', Base.metadata,
         Column('var_id', Integer, ForeignKey('variable.id')),
         Column('attr_id', Integer, ForeignKey('attribute.id')),
@@ -38,10 +39,44 @@ var_to_dim = Table('var_to_dim', Base.metadata,
         Column('ndim', Integer),
         )
 
+class Path(Base):
+    """
+    File path
+    """
+    __tablename__ = 'path'
+
+    id = Column(Integer, primary_key=True)
+    content_id = Column(Integer, ForeignKey('content.id'))
+    path = Column(Text)
+
+    content = relationship('Content', back_populates='paths')
+    meta = relationship('Metadata', secondary='content')
+
+
+class Content(Base):
+    """
+    A file's content. Separate from the path, as multiple paths may point to
+    the same data
+    """
+    __tablename__ = 'content'
+
+    id = Column(Integer, primary_key=True)
+    meta_id = Column(Integer, ForeignKey('metadata.id'))
+    sha256 = Column(String, unique=True)
+
+    meta = relationship('Metadata')
+    paths = relationship('Path', back_populates='content')
+
+
 class Metadata(Base):
+    """
+    Metadata sourced from a file
+    """
     __tablename__ = 'metadata'
 
     id = Column(Integer, primary_key=True)
+    
+    content = relationship('Content', back_populates='meta', uselist=False)
 
     dimensions = relationship('Dimension',
             back_populates='meta',

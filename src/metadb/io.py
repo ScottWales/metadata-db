@@ -24,7 +24,10 @@ def read_netcdf(path, session):
     """
     data = netCDF4.Dataset(path, mode='r')
 
-    meta = Metadata()
+    content = Content()
+    path = Path(path=path, content=content)
+
+    meta = Metadata(content=content)
 
     dimensions = [
         Dimension(name=d.name, size=d.size, meta=meta)
@@ -38,7 +41,7 @@ def read_netcdf(path, session):
 
     # Get the metadata for each variable
     for v in six.itervalues(data.variables):
-        attrs = [Attribute(key=a, value=v.getncattr(a))
+        attrs = [Attribute(key=a, value=str(v.getncattr(a)))
                 for a in v.ncattrs()]
         session.add_all(attrs)
 
@@ -46,7 +49,7 @@ def read_netcdf(path, session):
         meta.variables[v.name].dimensions = [meta.dimensions[d] for d in v.dimensions]
 
     # Get the global metadata
-    attrs = [Attribute(key=a, value=data.getncattr(a))
+    attrs = [Attribute(key=a, value=str(data.getncattr(a)))
             for a in data.ncattrs()]
     session.add_all(attrs)
     meta.attributes = {a.key: a for a in attrs}
