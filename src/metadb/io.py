@@ -18,6 +18,8 @@ from .model import *
 from .query import find_or_create
 import netCDF4
 import six
+import os
+from stat import *
 
 def read_netcdf(path, session):
     """
@@ -27,11 +29,27 @@ def read_netcdf(path, session):
 
     data = netCDF4.Dataset(path, mode='r')
 
-    meta = Metadata()
-    path = Path(path=path, meta = meta)
+    try:
+        mtime = os.stat(path)[ST_MTIME]
+    except FileNotFoundError:
+        # E.g. OpenDAP URL
+        mtime=-1
+
+    path = find_or_create(session, Path, path=path)
+
+    meta = path.meta
+    if meta is not None:
+        if meta.mtime < mtime:
+            raise Exception("File %s has been modified since last seen, updates are not supported")
+        return
+    else:
+        meta = Metadata(mtime=mtime)
+        path.meta = meta
+
+    session.add(meta)
 
     dimensions = [
-        Dimension(name=d.name, size=d.size, meta=meta)
+        find_or_create(session, Dimension, name=d.name, size=d.size, meta=meta)
         for d in six.itervalues(data.dimensions)]
     session.add_all(dimensions)
 
@@ -54,7 +72,5 @@ def read_netcdf(path, session):
             for a in data.ncattrs()]
     session.add_all(attrs)
     meta.attributes = {a.key: a for a in attrs}
-
-    session.add(meta)
 
     return meta

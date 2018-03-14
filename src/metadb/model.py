@@ -47,7 +47,7 @@ class Path(Base):
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
-    path = Column(Text)
+    path = Column(Text, unique=True)
 
     meta = relationship('Metadata', back_populates='paths')
 
@@ -60,6 +60,7 @@ class Metadata(Base):
 
     id = Column(Integer, primary_key=True)
     sha256 = Column(String, unique=True)
+    mtime = Column(Integer)
 
     dimensions = relationship('Dimension',
             back_populates='meta',
