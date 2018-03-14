@@ -22,6 +22,8 @@ def read_netcdf(path, session):
     """
     Import a netCDF file's metadata into the DB
     """
+    print("Loading %s"%path)
+
     data = netCDF4.Dataset(path, mode='r')
 
     meta = Metadata()
