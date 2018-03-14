@@ -76,6 +76,10 @@ class list_cmd(object):
                 help="List files",
                 description=getdoc(self))
 
+        parser.add_argument('--variable',
+                nargs=1,
+                action='append')
+
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
