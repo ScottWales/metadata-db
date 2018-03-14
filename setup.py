@@ -12,7 +12,6 @@ setup(
 
         install_requires=[
             'sqlalchemy',
-            'xarray',
             'netcdf4',
             ],
         entry_points={
