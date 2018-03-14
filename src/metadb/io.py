@@ -15,6 +15,7 @@
 # limitations under the License.
 from __future__ import print_function
 from .model import *
+from .query import find_or_create
 import netCDF4
 import six
 
@@ -41,7 +42,7 @@ def read_netcdf(path, session):
 
     # Get the metadata for each variable
     for v in six.itervalues(data.variables):
-        attrs = [Attribute(key=a, value=str(v.getncattr(a)))
+        attrs = [find_or_create(session, Attribute, key=a, value=str(v.getncattr(a)))
                 for a in v.ncattrs()]
         session.add_all(attrs)
 
@@ -49,7 +50,7 @@ def read_netcdf(path, session):
         meta.variables[v.name].dimensions = [meta.dimensions[d] for d in v.dimensions]
 
     # Get the global metadata
-    attrs = [Attribute(key=a, value=str(data.getncattr(a)))
+    attrs = [find_or_create(session, Attribute, key=a, value=str(data.getncattr(a)))
             for a in data.ncattrs()]
     session.add_all(attrs)
     meta.attributes = {a.key: a for a in attrs}

@@ -48,3 +48,17 @@ def search_metadata(session, variables=[], file_attributes=[], variable_attribut
             q = q.filter(and_(variable_attrs.key == k, variable_attrs.value == v))
 
     return q
+
+
+def find_or_create(session, klass, **kwargs):
+    """
+    Return either an existing klass object that matches kwargs, or create a new
+    one
+    """
+    r = session.query(klass).filter_by(**kwargs).one_or_none()
+
+    if r is None:
+        r = klass(**kwargs)
+
+    return r
+

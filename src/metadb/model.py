@@ -17,7 +17,7 @@ from __future__ import print_function
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy import ForeignKey, Table
+from sqlalchemy import ForeignKey, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
@@ -81,6 +81,10 @@ class Attribute(Base):
     id = Column(Integer, primary_key=True)
     key = Column(String)
     value = Column(Text)
+
+    __table_args__ = (
+            UniqueConstraint('key', 'value'),
+            )
 
 
 class Dimension(Base):

@@ -72,8 +72,9 @@ class import_cmd(object):
         for g in args.file:
             if g.startswith('http'):
                 io.read_netcdf(g, session)
-            for f in glob.iglob(g):
-                io.read_netcdf(f, session)
+            else:
+                for f in glob.iglob(g, recursive=True):
+                    io.read_netcdf(f, session)
 
 class list_cmd(object):
     """
