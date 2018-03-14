@@ -21,6 +21,7 @@ from sqlalchemy.orm import aliased
 from argparse import ArgumentParser
 from inspect import getdoc
 import os
+import glob
 
 
 def cli():
@@ -68,8 +69,11 @@ class import_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        for f in args.file:
-            io.read_netcdf(f, session)
+        for g in args.file:
+            if g.startswith('http'):
+                io.read_netcdf(g, session)
+            for f in glob.iglob(g):
+                io.read_netcdf(f, session)
 
 class list_cmd(object):
     """
