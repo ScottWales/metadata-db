@@ -24,7 +24,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import and_
 import six
 
-def search_metadata(session, variables=None, file_attributes=None, variable_attributes=None):
+def search_metadata(session, variables=[], file_attributes=[], variable_attributes=[]):
     global_attrs = aliased(Attribute)
     variable_attrs = aliased(Attribute)
 
@@ -36,15 +36,15 @@ def search_metadata(session, variables=None, file_attributes=None, variable_attr
             .distinct()
             )
 
-    if variables is not None:
+    if variables:
         q = q.filter(Variable.name.in_(variables))
 
-    if file_attributes is not None:
-        for k, v in six.iteritems(file_attributes):
+    if file_attributes:
+        for k, v in file_attributes:
             q = q.filter(and_(global_attrs.key == k, global_attrs.value == v))
 
-    if variable_attributes is not None:
-        for k, v in six.iteritems(variable_attributes):
+    if variable_attributes:
+        for k, v in variable_attributes:
             q = q.filter(and_(variable_attrs.key == k, variable_attrs.value == v))
 
     return q

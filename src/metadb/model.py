@@ -46,26 +46,10 @@ class Path(Base):
     __tablename__ = 'path'
 
     id = Column(Integer, primary_key=True)
-    content_id = Column(Integer, ForeignKey('content.id'))
+    meta_id = Column(Integer, ForeignKey('metadata.id'))
     path = Column(Text)
 
-    content = relationship('Content', back_populates='paths')
-    meta = relationship('Metadata', secondary='content')
-
-
-class Content(Base):
-    """
-    A file's content. Separate from the path, as multiple paths may point to
-    the same data
-    """
-    __tablename__ = 'content'
-
-    id = Column(Integer, primary_key=True)
-    meta_id = Column(Integer, ForeignKey('metadata.id'))
-    sha256 = Column(String, unique=True)
-
-    meta = relationship('Metadata')
-    paths = relationship('Path', back_populates='content')
+    meta = relationship('Metadata', back_populates='paths')
 
 
 class Metadata(Base):
@@ -75,8 +59,7 @@ class Metadata(Base):
     __tablename__ = 'metadata'
 
     id = Column(Integer, primary_key=True)
-    
-    content = relationship('Content', back_populates='meta', uselist=False)
+    sha256 = Column(String, unique=True)
 
     dimensions = relationship('Dimension',
             back_populates='meta',
@@ -90,6 +73,7 @@ class Metadata(Base):
             secondary=meta_to_attr,
             collection_class=attribute_mapped_collection('key'),
             )
+    paths = relationship('Path', back_populates='meta')
 
 class Attribute(Base):
     __tablename__ = 'attribute'

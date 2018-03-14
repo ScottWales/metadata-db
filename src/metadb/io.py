@@ -24,10 +24,8 @@ def read_netcdf(path, session):
     """
     data = netCDF4.Dataset(path, mode='r')
 
-    content = Content()
-    path = Path(path=path, content=content)
-
-    meta = Metadata(content=content)
+    meta = Metadata()
+    path = Path(path=path, meta = meta)
 
     dimensions = [
         Dimension(name=d.name, size=d.size, meta=meta)

@@ -16,6 +16,8 @@
 from __future__ import print_function
 import metadb.db as db
 import metadb.io as io
+import metadb.query as query
+from sqlalchemy.orm import aliased
 from argparse import ArgumentParser
 from inspect import getdoc
 import os
@@ -30,6 +32,9 @@ def cli():
     parser.add_argument('--database',
             help='Database URL',
             default='sqlite:///%s/metadb.db'%os.environ.get('HOME','.'))
+    parser.add_argument('--debug',
+            help='Debug mode',
+            action='store_true')
 
     subparser = parser.add_subparsers(help="Command")
 
@@ -38,7 +43,7 @@ def cli():
 
     args = parser.parse_args()
 
-    db.connect(url=args.database, init=True) 
+    db.connect(url=args.database, debug=args.debug, init=True) 
     session = db.Session()
 
     args.command(args, session=session)
@@ -68,7 +73,9 @@ class import_cmd(object):
 
 class list_cmd(object):
     """
-    List files in the catalogue
+    List files in the catalogue, filtered by attribute values.
+
+    Attribute constraints may be specified multiple times, resulting in an AND
     """
 
     def setup_parser(self, subparser):
@@ -77,18 +84,40 @@ class list_cmd(object):
                 description=getdoc(self))
 
         parser.add_argument('--variable',
-                nargs=1,
+                help="Variable name",
+                action='append')
+
+        parser.add_argument('--file-attribute',
+                help="Global file attribute",
+                nargs=2,
+                metavar=('KEY', 'VALUE'),
+                action='append')
+
+        parser.add_argument('--var-attribute',
+                help="Variable attribute",
+                nargs=2,
+                metavar=('KEY', 'VALUE'),
                 action='append')
 
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
         import metadb.model as model
+
+        sub = query.search_metadata(session,
+                variables=args.variable,
+                file_attributes=args.file_attribute,
+                variable_attributes=args.var_attribute).subquery()
+        sub = aliased(model.Metadata, sub)
+
+        # Convert the Metadata into path, title tuples
+        attr_title = aliased(model.Attribute)
         q = (session
-                .query(model.Path.path, model.Attribute.value)
-                .join(model.Path.meta)
-                .join(model.Metadata.attributes)
-                .filter(model.Attribute.key == 'title')
+                .query(model.Path.path, attr_title.value)
+                .join(sub, model.Path.meta)
+                .join(attr_title, sub.attributes)
+                .filter(attr_title.key == 'title')
                 )
+
         for path, title in q:
-            print(path, title)
+            print(path, '|', title)

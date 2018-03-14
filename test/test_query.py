@@ -41,10 +41,10 @@ def test_search_metadata(session):
 
     mb.attributes.set(a1)
 
-    q = search_metadata(session, file_attributes = {'a': 'v'})
+    q = search_metadata(session, file_attributes = [('a', 'v')])
     assert q.count() == 1
     assert q.one() == mb
 
-    q = search_metadata(session, variable_attributes = {'a': 'v'})
+    q = search_metadata(session, variable_attributes = [('a', 'v')])
     assert q.count() == 1
     assert q.one() == ma
