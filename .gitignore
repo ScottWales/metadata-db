@@ -103,3 +103,6 @@ ENV/
 
 # Editor tmp files
 *.swp
+
+# Sphinx files
+doc/_build/doctrees
