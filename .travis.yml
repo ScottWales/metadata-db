@@ -13,7 +13,8 @@ script:
     - coverage run --source metadb -m py.test
 after_script:
     - coverage xml
-    - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    - cat coverage.xml
+    - ./cc-test-reporter --debug after-build --exit-code $TRAVIS_TEST_RESULT
 # deploy:
 #   provider: pypi
 #   user:
