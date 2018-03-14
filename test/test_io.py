@@ -26,3 +26,11 @@ def test_read(session):
     read_netcdf(test_data, session=session) 
 
     m = session.query(Metadata).one()
+
+    assert m.attributes['institute_id'].value == 'CSIRO-BOM'
+
+    assert m.variables['tas'].name == 'tas'
+    assert m.variables['tas'].dimensions[0].name == 'time'
+    assert m.variables['tas'].dimensions[1].name == 'lat'
+    assert m.variables['tas'].dimensions[2].name == 'lon'
+    assert m.variables['tas'].attributes['units'].value == 'K'

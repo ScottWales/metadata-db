@@ -22,7 +22,7 @@ import pytest
 
 @pytest.fixture(scope='session')
 def database():
-    conn = db.connect('sqlite:///:memory:', debug=True, init=True)
+    conn = db.connect('sqlite:///:memory:', debug=False, init=True)
     yield conn
     conn.close()
 
