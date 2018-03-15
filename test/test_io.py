@@ -18,7 +18,6 @@ from __future__ import print_function
 from metadb.io import *
 from metadb.model import *
 
-from unittest.mock import patch
 
 def test_read_general(session):
     read_general(path='foo', session=session)
