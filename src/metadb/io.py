@@ -25,7 +25,7 @@ from stat import *
 try:
     FileNotFoundError
 except NameError:
-    FileNotFoundError = IOError
+    FileNotFoundError = OSError
 
 def read_netcdf(path, session):
     """
