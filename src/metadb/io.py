@@ -37,7 +37,7 @@ def read_general(path, session, collections=[]):
         stat = os.stat(path)
         mtime = stat[ST_MTIME]
         size = stat[ST_SIZE]
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         # E.g. OpenDAP URL
         mtime = -1
         size = -1
