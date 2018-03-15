@@ -30,7 +30,7 @@ except NameError:
 
 def read_general(path, session, collections=[]):
     """
-    General purpose metadata
+    General purpose metadata reader
     """
 
     try:
@@ -58,33 +58,22 @@ def read_general(path, session, collections=[]):
 
     session.add(path)
 
+    read_netcdf_metadata(path.path, path.meta, session)
 
-def read_netcdf(path, session):
+
+def read_netcdf_metadata(path, meta, session):
     """
     Import a netCDF file's metadata into the DB
+
+    No-op if path is not a NetCDF file
     """
     print("Loading %s" % path)
 
-    data = netCDF4.Dataset(path, mode='r')
-
     try:
-        mtime = os.stat(path)[ST_MTIME]
+        data = netCDF4.Dataset(path, mode='r')
     except FileNotFoundError:
-        # E.g. OpenDAP URL
-        mtime = -1
-
-    path = find_or_create(session, Path, path=path)
-
-    meta = path.meta
-    if meta is not None:
-        if meta.mtime < mtime:
-            raise Exception(
-                "File %s has been modified since last seen, "
-                "updates are not supported")
+        # Not a Netcdf file, return
         return
-    else:
-        meta = Metadata(mtime=mtime)
-        path.meta = meta
 
     session.add(meta)
 
@@ -120,4 +109,3 @@ def read_netcdf(path, session):
     session.add_all(attrs)
     meta.attributes = {a.key: a for a in attrs}
 
-    return meta
