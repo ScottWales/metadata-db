@@ -11,10 +11,14 @@ metadata-db
    :target: https://codeclimate.com/github/ScottWales/metadata-db/maintainability
    :alt: Maintainability
 
+Create a new collection::
+
+    metadb collection --name my-data
 
 Read files into the database::
 
     metadb import /path/to/files
+    metadb import --collection my-data /path/to/files
 
 
 Get a list of files matching given constraints::
