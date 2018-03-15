@@ -29,7 +29,7 @@ def database():
 @pytest.fixture
 def session(database):
     trans = database.begin()
-    session = db.session_factory(bind=database)
+    session = db.Session(bind=database)
     yield session
     session.close()
     trans.rollback()

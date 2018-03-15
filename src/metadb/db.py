@@ -18,13 +18,12 @@ limitations under the License.
 """
 from __future__ import print_function
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 
-session_factory = sessionmaker()
-Session = scoped_session(session_factory)
+Session = sessionmaker()
 
 
-def connect(url, debug=False, init=False):
+def connect(url, debug=False, init=False, session=Session):
     """
     Returns a sqlalchemy.Connection
     """
@@ -34,6 +33,6 @@ def connect(url, debug=False, init=False):
         from .model import Base
         Base.metadata.create_all(engine)
 
-    Session.configure(bind=engine)
+    session.configure(bind=engine)
 
     return engine.connect()

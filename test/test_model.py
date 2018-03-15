@@ -17,9 +17,11 @@ from __future__ import print_function
 
 from metadb.model import *
 
+
 def test_db(session):
     q = session.query(Metadata)
     assert q.count() == 0
+
 
 def test_collection(session):
     c = Collection(name='c')
@@ -31,3 +33,15 @@ def test_collection(session):
                 .filter(Collection.name == 'c')
                 .one())
     assert q == p
+
+
+def test_path(session):
+    p = Path(path='/foo/bar')
+    session.add(p)
+
+    m = Metadata(paths=[p])
+    session.add(m)
+
+    assert p.basename == 'bar'
+
+    path, meta = session.query(Path, Metadata).join(Path.meta).one()

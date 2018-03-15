@@ -1,0 +1,27 @@
+<h1>{{ path.basename }}</h1>
+
+{{ path.path }}<br>
+{{ meta.size_str }}<br>
+
+{% if path.collections | length > 0 %}
+    <h2>Collections</h2>
+    {% for collection in path.collections %}
+        <a href="/collection/{{ collection.name }}">{{ collection.name }}</a>
+    {% endfor %}
+{% endif %}
+
+{% for attr in meta.attributes.values() %}
+    {{ attr.key }}: {{ attr.value }}<br>
+{% endfor %}
+
+{% for variable in meta.variables.values() %}
+    <h2>{{ variable.name }}( 
+        {% for dim in variable.dimensions %}
+            {{ dim.name }}
+        {% endfor %}
+    )</h2>
+
+    {% for attr in variable.attributes.values() %}
+        {{ attr.key }}: {{ attr.value }}<br>
+    {% endfor %}
+{% endfor %}

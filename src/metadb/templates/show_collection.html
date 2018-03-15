@@ -1,0 +1,4 @@
+<h1>{{ collection.name }}</h1>
+{% for path in collection.paths %}
+<a href="/path/{{ path.id }}">{{ path.path }}</a><br>
+{% endfor %}

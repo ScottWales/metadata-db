@@ -13,6 +13,7 @@ setup(
         install_requires=[
             'sqlalchemy',
             'netcdf4',
+            'flask',
             ],
         entry_points={
             'console_scripts': [
