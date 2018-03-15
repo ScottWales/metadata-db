@@ -109,7 +109,8 @@ class import_cmd(object):
                 next(glob.iglob(g, recursive=True))
                 for f in glob.iglob(g, recursive=True):
                     io.read_general(f, collections=colls, session=session)
-            except StopIteration:
+            except (StopIteration, TypeError):
+                # Either not a filesystem glob, or using Python < 3.4
                 # Try reading it anyway, to support things like opendap links
                 io.read_general(g, collections=colls, session=session)
 
