@@ -60,6 +60,18 @@ def read_general(path, session, collections=[]):
 
     read_netcdf_metadata(path.path, path.meta, session)
 
+def read_netcdf_attributes(source, session):
+    """
+    Read attributes from a NetCDF object
+    """
+    attrs = [find_or_create(session,
+                            Attribute,
+                            key=a,
+                            value=str(source.getncattr(a)))
+             for a in source.ncattrs()]
+
+    session.add_all(attrs)
+    return attrs
 
 def read_netcdf_metadata(path, meta, session):
     """
@@ -89,23 +101,12 @@ def read_netcdf_metadata(path, meta, session):
 
     # Get the metadata for each variable
     for v in six.itervalues(data.variables):
-        attrs = [find_or_create(session,
-                                Attribute,
-                                key=a,
-                                value=str(v.getncattr(a)))
-                 for a in v.ncattrs()]
-        session.add_all(attrs)
+        attrs = read_netcdf_attributes(v, session)
 
         meta.variables[v.name].attributes = {a.key: a for a in attrs}
         meta.variables[v.name].dimensions = [meta.dimensions[d]
                                              for d in v.dimensions]
 
     # Get the global metadata
-    attrs = [find_or_create(session,
-                            Attribute,
-                            key=a,
-                            value=str(data.getncattr(a)))
-             for a in data.ncattrs()]
-    session.add_all(attrs)
+    attrs = read_netcdf_attributes(data, session)
     meta.attributes = {a.key: a for a in attrs}
-
