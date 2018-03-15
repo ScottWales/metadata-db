@@ -60,6 +60,7 @@ def read_general(path, session, collections=[]):
 
     read_netcdf_metadata(path.path, path.meta, session)
 
+
 def read_netcdf_attributes(source, session):
     """
     Read attributes from a NetCDF object
@@ -72,6 +73,7 @@ def read_netcdf_attributes(source, session):
 
     session.add_all(attrs)
     return attrs
+
 
 def read_netcdf_metadata(path, meta, session):
     """
