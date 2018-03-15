@@ -21,6 +21,12 @@ import six
 import os
 from stat import *
 
+# FileNotFoundError not available in Python 2
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
 def read_netcdf(path, session):
     """
     Import a netCDF file's metadata into the DB
