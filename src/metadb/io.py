@@ -25,7 +25,7 @@ from stat import *
 try:
     FileNotFoundError
 except NameError:
-    FileNotFoundError = (OSError, IOError)
+    FileNotFoundError = IOError
 
 
 def read_general(path, session, collections=[]):
@@ -37,7 +37,7 @@ def read_general(path, session, collections=[]):
         stat = os.stat(path)
         mtime = stat[ST_MTIME]
         size = stat[ST_SIZE]
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         # E.g. OpenDAP URL
         mtime = -1
         size = -1
@@ -53,7 +53,7 @@ def read_general(path, session, collections=[]):
                 "updates are not supported")
         return
     else:
-        meta = Metadata(mtime=mtime)
+        meta = Metadata(mtime=mtime, size=size)
         path.meta = meta
 
     session.add(path)
@@ -85,7 +85,7 @@ def read_netcdf_metadata(path, meta, session):
 
     try:
         data = netCDF4.Dataset(path, mode='r')
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         # Not a Netcdf file, return
         return
 

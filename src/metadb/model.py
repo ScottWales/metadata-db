@@ -21,6 +21,7 @@ from sqlalchemy import ForeignKey, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
+import os
 
 Base = declarative_base()
 
@@ -72,6 +73,10 @@ class Path(Base):
     collections = relationship('Collection', secondary=path_to_collection,
                                back_populates='paths')
 
+    @property
+    def basename(self):
+        return os.path.basename(self.path)
+
 
 class Metadata(Base):
     """
@@ -82,6 +87,7 @@ class Metadata(Base):
     id = Column(Integer, primary_key=True)
     sha256 = Column(String, unique=True)
     mtime = Column(Integer)
+    size = Column(Integer)
 
     dimensions = relationship('Dimension',
                               back_populates='meta',
@@ -99,6 +105,13 @@ class Metadata(Base):
                                   'key'),
                               )
     paths = relationship('Path', back_populates='meta')
+
+    @property
+    def size_str(self):
+        from math import log, floor
+        r = int(floor(log(self.size, 1000)))
+        prefix = ['', 'k', 'm', 'G', 'T']
+        return "%.1f %sb" % (self.size / 1000**r, prefix[r])
 
 
 class Attribute(Base):
