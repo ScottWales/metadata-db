@@ -20,3 +20,14 @@ from metadb.model import *
 def test_db(session):
     q = session.query(Metadata)
     assert q.count() == 0
+
+def test_collection(session):
+    c = Collection(name='c')
+    p = Path(collections=[c])
+    session.add(p)
+
+    q = (session.query(Path)
+                .join(Path.collections)
+                .filter(Collection.name == 'c')
+                .one())
+    assert q == p
