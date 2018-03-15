@@ -18,9 +18,10 @@ limitations under the License.
 """
 from __future__ import print_function
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-Session = sessionmaker()
+session_factory = sessionmaker()
+Session = scoped_session(session_factory)
 
 
 def connect(url, debug=False, init=False):
