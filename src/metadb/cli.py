@@ -17,14 +17,16 @@ from __future__ import print_function
 import metadb.db as db
 import metadb.io as io
 import metadb.query as query
+import metadb.model as model
 from sqlalchemy.orm import aliased
 from argparse import ArgumentParser
 from inspect import getdoc
 import os
 import glob
+import sys
 
 
-def cli():
+def cli(argv=sys.argv, session=None):
     """
     Functions to store and retrieve metadata
     """
@@ -42,14 +44,37 @@ def cli():
 
     import_cmd().setup_parser(subparser)
     list_cmd().setup_parser(subparser)
+    collection_cmd().setup_parser(subparser)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    db.connect(url=args.database, debug=args.debug, init=True)
-    session = db.Session()
+    if session is None:
+        db.connect(url=args.database, debug=args.debug, init=True)
+        session = db.Session()
 
     args.command(args, session=session)
     session.commit()
+
+
+class collection_cmd(object):
+    """
+    Create a new collection
+    """
+
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('collection',
+                                      help="Create a collection",
+                                      description=getdoc(self))
+
+        parser.add_argument('--name',
+                            help="Collection name",
+                            )
+
+        parser.set_defaults(command=self)
+
+    def __call__(self, args, session):
+        c = model.Collection(name=args.name)
+        session.add(c)
 
 
 class import_cmd(object):
@@ -109,8 +134,6 @@ class list_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        import metadb.model as model
-
         sub = query.search_metadata(session,
                                     variables=args.variable,
                                     file_attributes=args.file_attribute,
