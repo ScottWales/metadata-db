@@ -25,24 +25,25 @@ from stat import *
 try:
     FileNotFoundError
 except NameError:
-    FileNotFoundError = OSError
+    FileNotFoundError = (OSError, IOError)
 
 
-def read_netcdf(path, session):
+def read_general(path, session, collections=[]):
     """
-    Import a netCDF file's metadata into the DB
+    General purpose metadata reader
     """
-    print("Loading %s" % path)
-
-    data = netCDF4.Dataset(path, mode='r')
 
     try:
-        mtime = os.stat(path)[ST_MTIME]
+        stat = os.stat(path)
+        mtime = stat[ST_MTIME]
+        size = stat[ST_SIZE]
     except FileNotFoundError:
         # E.g. OpenDAP URL
         mtime = -1
+        size = -1
 
     path = find_or_create(session, Path, path=path)
+    path.collections.extend(collections)
 
     meta = path.meta
     if meta is not None:
@@ -54,6 +55,39 @@ def read_netcdf(path, session):
     else:
         meta = Metadata(mtime=mtime)
         path.meta = meta
+
+    session.add(path)
+
+    read_netcdf_metadata(path.path, path.meta, session)
+
+
+def read_netcdf_attributes(source, session):
+    """
+    Read attributes from a NetCDF object
+    """
+    attrs = [find_or_create(session,
+                            Attribute,
+                            key=a,
+                            value=str(source.getncattr(a)))
+             for a in source.ncattrs()]
+
+    session.add_all(attrs)
+    return attrs
+
+
+def read_netcdf_metadata(path, meta, session):
+    """
+    Import a netCDF file's metadata into the DB
+
+    No-op if path is not a NetCDF file
+    """
+    print("Loading %s" % path)
+
+    try:
+        data = netCDF4.Dataset(path, mode='r')
+    except FileNotFoundError:
+        # Not a Netcdf file, return
+        return
 
     session.add(meta)
 
@@ -69,24 +103,12 @@ def read_netcdf(path, session):
 
     # Get the metadata for each variable
     for v in six.itervalues(data.variables):
-        attrs = [find_or_create(session,
-                                Attribute,
-                                key=a,
-                                value=str(v.getncattr(a)))
-                 for a in v.ncattrs()]
-        session.add_all(attrs)
+        attrs = read_netcdf_attributes(v, session)
 
         meta.variables[v.name].attributes = {a.key: a for a in attrs}
         meta.variables[v.name].dimensions = [meta.dimensions[d]
                                              for d in v.dimensions]
 
     # Get the global metadata
-    attrs = [find_or_create(session,
-                            Attribute,
-                            key=a,
-                            value=str(data.getncattr(a)))
-             for a in data.ncattrs()]
-    session.add_all(attrs)
+    attrs = read_netcdf_attributes(data, session)
     meta.attributes = {a.key: a for a in attrs}
-
-    return meta

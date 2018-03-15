@@ -15,15 +15,46 @@
 # limitations under the License.
 from __future__ import print_function
 
-from metadb.io import read_netcdf
+from metadb.io import *
 from metadb.model import *
+
+
+def test_read_general(session):
+    read_general(path='foo', session=session)
+    p1 = session.query(Path).one()
+    m = session.query(Metadata).one()
+    assert p1.path == 'foo'
+    assert p1.meta == m
+
+    # Identical paths should not create a new object
+    read_general(path='foo', session=session)
+    p2 = session.query(Path).one()
+    assert p1 == p2
+
 
 test_data = ('http://dapds00.nci.org.au/thredds/dodsC/rr3/CMIP5/output1/'
             'CSIRO-BOM/ACCESS1-0/historical/mon/atmos/Amon/r1i1p1/latest/'
             'tas/tas_Amon_ACCESS1-0_historical_r1i1p1_185001-200512.nc')
 
-def test_read(session):
-    read_netcdf(test_data, session=session) 
+def test_read_netcdf_metadata(session):
+    meta = Metadata()
+    read_netcdf_metadata(test_data, meta, session=session) 
+
+    m = session.query(Metadata).one()
+
+    assert m.attributes['institute_id'].value == 'CSIRO-BOM'
+
+    assert m.variables['tas'].name == 'tas'
+    assert m.variables['tas'].dimensions[0].name == 'time'
+    assert m.variables['tas'].dimensions[1].name == 'lat'
+    assert m.variables['tas'].dimensions[2].name == 'lon'
+    assert m.variables['tas'].attributes['units'].value == 'K'
+
+def test_read_general_netcdf(session):
+    read_general(test_data, session=session) 
+
+    p = session.query(Path).one()
+    assert p.path == test_data
 
     m = session.query(Metadata).one()
 

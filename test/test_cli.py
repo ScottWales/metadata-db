@@ -14,20 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import print_function
-
+from metadb.cli import cli
 from metadb.model import *
 
-def test_db(session):
-    q = session.query(Metadata)
-    assert q.count() == 0
 
-def test_collection(session):
-    c = Collection(name='c')
-    p = Path(collections=[c])
-    session.add(p)
+def test_collection_cmd(session):
+    cli(argv='collection --name a'.split(), session=session)
 
-    q = (session.query(Path)
-                .join(Path.collections)
-                .filter(Collection.name == 'c')
-                .one())
-    assert q == p
+    q = session.query(Collection).one()
+    assert q.name == 'a'
+
+
+def test_import_to_collection(session):
+    c = Collection(name='a')
+    session.add(c)
+
+    cli(argv='import --collection a foo'.split(), session=session)
+
+    q = session.query(Path).one()
+    assert q.collections == [c]

@@ -38,6 +38,24 @@ var_to_dim = Table('var_to_dim', Base.metadata,
                    Column('dim_id', Integer, ForeignKey('dimension.id')),
                    Column('ndim', Integer),
                    )
+path_to_collection = Table('path_to_collection', Base.metadata,
+                           Column('path_id', Integer, ForeignKey('path.id')),
+                           Column('coll_id', Integer,
+                                  ForeignKey('collection.id')),
+                           )
+
+
+class Collection(Base):
+    """
+    Collection of files
+    """
+    __tablename__ = 'collection'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+    paths = relationship('Path', secondary=path_to_collection,
+                         back_populates='collections')
 
 
 class Path(Base):
@@ -51,6 +69,8 @@ class Path(Base):
     path = Column(Text, unique=True)
 
     meta = relationship('Metadata', back_populates='paths')
+    collections = relationship('Collection', secondary=path_to_collection,
+                               back_populates='paths')
 
 
 class Metadata(Base):
