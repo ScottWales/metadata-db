@@ -25,7 +25,7 @@ from stat import *
 try:
     FileNotFoundError
 except NameError:
-    FileNotFoundError = OSError
+    FileNotFoundError = (OSError, IOError)
 
 
 def read_general(path, session, collections=[]):
