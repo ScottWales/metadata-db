@@ -20,3 +20,10 @@ Build & upload docs
     make -C doc html
     git commit doc/_build/html
     git subtree push --prefix doc/_build/html origin gh-pages
+
+Start a test webserver
+======================
+
+::
+
+    FLASK_APP=meta.web FLASK_DEBUG=1 flask run
