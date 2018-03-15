@@ -28,6 +28,37 @@ except NameError:
     FileNotFoundError = OSError
 
 
+def read_general(path, session, collections=[]):
+    """
+    General purpose metadata
+    """
+
+    try:
+        stat = os.stat(path)
+        mtime = stat[ST_MTIME]
+        size = stat[ST_SIZE]
+    except FileNotFoundError:
+        # E.g. OpenDAP URL
+        mtime = -1
+        size = -1
+
+    path = find_or_create(session, Path, path=path)
+    path.collections.extend(collections)
+
+    meta = path.meta
+    if meta is not None:
+        if meta.mtime < mtime:
+            raise Exception(
+                "File %s has been modified since last seen, "
+                "updates are not supported")
+        return
+    else:
+        meta = Metadata(mtime=mtime)
+        path.meta = meta
+
+    session.add(path)
+
+
 def read_netcdf(path, session):
     """
     Import a netCDF file's metadata into the DB

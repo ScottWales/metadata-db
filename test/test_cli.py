@@ -17,10 +17,19 @@ from __future__ import print_function
 from metadb.cli import cli
 from metadb.model import *
 
-def test_collection_cmd(session):
 
+def test_collection_cmd(session):
     cli(argv='collection --name a'.split(), session=session)
 
     q = session.query(Collection).one()
     assert q.name == 'a'
 
+
+def test_import_to_collection(session):
+    c = Collection(name='a')
+    session.add(c)
+
+    cli(argv='import --collection a foo'.split(), session=session)
+
+    q = session.query(Path).one()
+    assert q.collections == [c]

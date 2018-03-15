@@ -87,6 +87,11 @@ class import_cmd(object):
                                       help="Import a file's metadata",
                                       description=getdoc(self))
 
+        parser.add_argument('--collection',
+                            help="Collection name",
+                            action="append",
+                            )
+
         parser.add_argument('file',
                             help="File to add",
                             nargs="+",
@@ -95,12 +100,18 @@ class import_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
+        colls = (session.query(model.Collection)
+                        .filter(model.Collection.name.in_(args.collection)))
+
         for g in args.file:
-            if g.startswith('http'):
-                io.read_netcdf(g, session)
-            else:
+            try:
+                # Check if this works as a glob
+                next(glob.iglob(g, recursive=True))
                 for f in glob.iglob(g, recursive=True):
-                    io.read_netcdf(f, session)
+                    io.read_general(f, collections=colls, session=session)
+            except StopIteration:
+                # Try reading it anyway, to support things like opendap links
+                io.read_general(g, collections=colls, session=session)
 
 
 class list_cmd(object):
