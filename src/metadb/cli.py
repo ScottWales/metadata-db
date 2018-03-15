@@ -26,7 +26,7 @@ import glob
 import sys
 
 
-def cli(argv=sys.argv, session=None):
+def cli(argv=sys.argv[1:], session=None):
     """
     Functions to store and retrieve metadata
     """
