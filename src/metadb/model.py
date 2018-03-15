@@ -110,9 +110,8 @@ class Metadata(Base):
     def size_str(self):
         from math import log, floor
         r = int(floor(log(self.size, 1000)))
-        prefix = ['','k','m','G','T']
-        return "%.1f %sb"%(self.size / 1000**r, prefix[r])
-
+        prefix = ['', 'k', 'm', 'G', 'T']
+        return "%.1f %sb" % (self.size / 1000**r, prefix[r])
 
 
 class Attribute(Base):

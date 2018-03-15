@@ -20,11 +20,13 @@ from __future__ import print_function
 import metadb.db as db
 import pytest
 
+
 @pytest.fixture(scope='session')
 def database():
     conn = db.connect('sqlite:///:memory:', debug=True, init=True)
     yield conn
     conn.close()
+
 
 @pytest.fixture
 def session(database):
