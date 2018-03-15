@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # Copyright 2018 ARC Centre of Excellence for Climate Systems Science
 # author: Scott Wales <scott.wales@unimelb.edu.au>
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,17 +24,21 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import and_
 import six
 
-def search_metadata(session, variables=[], file_attributes=[], variable_attributes=[]):
+
+def search_metadata(session,
+                    variables=[],
+                    file_attributes=[],
+                    variable_attributes=[]):
     global_attrs = aliased(Attribute)
     variable_attrs = aliased(Attribute)
 
     q = (session
-            .query(Metadata)
-            .join(Metadata.variables)
-            .join(global_attrs, Metadata.attributes, isouter=True)
-            .join(variable_attrs, Variable.attributes, isouter=True)
-            .distinct()
-            )
+         .query(Metadata)
+         .join(Metadata.variables)
+         .join(global_attrs, Metadata.attributes, isouter=True)
+         .join(variable_attrs, Variable.attributes, isouter=True)
+         .distinct()
+         )
 
     if variables:
         q = q.filter(Variable.name.in_(variables))
@@ -45,7 +49,8 @@ def search_metadata(session, variables=[], file_attributes=[], variable_attribut
 
     if variable_attributes:
         for k, v in variable_attributes:
-            q = q.filter(and_(variable_attrs.key == k, variable_attrs.value == v))
+            q = q.filter(and_(variable_attrs.key == k,
+                              variable_attrs.value == v))
 
     return q
 
@@ -61,4 +66,3 @@ def find_or_create(session, klass, **kwargs):
         r = klass(**kwargs)
 
     return r
-
