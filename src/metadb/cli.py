@@ -79,7 +79,7 @@ class collection_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        c = model.Collection(name=args.name)
+        c = query.find_or_create(session, model.Collection, name=args.name)
         session.add(c)
 
 

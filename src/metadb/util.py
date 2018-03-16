@@ -18,5 +18,5 @@ from __future__ import print_function
 def size_str(size):
     from math import log, floor
     r = int(floor(log(size, 1000)))
-    prefix = ['', 'k', 'm', 'G', 'T']
+    prefix = [' ', 'k', 'm', 'G', 'T']
     return "%.1f %sb" % (size / 1000**r, prefix[r])

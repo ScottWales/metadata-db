@@ -53,7 +53,7 @@ class Collection(Base):
     __tablename__ = 'collection'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, unique=True)
 
     paths = relationship('Path', secondary=path_to_collection,
                          back_populates='collections')

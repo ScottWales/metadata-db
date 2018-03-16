@@ -25,6 +25,10 @@ def test_collection_cmd(session):
     q = session.query(Collection).one()
     assert q.name == 'a'
 
+    cli(argv='collection --name a'.split(), session=session)
+
+    q = session.query(Collection)
+    assert q.count() == 1
 
 def test_import_to_collection(session):
     c = Collection(name='a')
