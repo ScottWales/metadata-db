@@ -38,6 +38,9 @@ def test_import_to_collection(session):
 
 def test_crawler(session):
     with patch('metadb.cli.crawler.crawl_recursive') as crawler:
+        c = Collection(name='a')
+        session.add(c)
+
         cli(argv='crawl --collection a foo'.split(), session=session)
-        crawler.assert_called_once_with(session, 'foo', collection='a')
+        crawler.assert_called_once_with(session, 'foo', collection=c)
 

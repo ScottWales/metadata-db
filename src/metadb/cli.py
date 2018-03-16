@@ -191,5 +191,8 @@ class crawl_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
+        c = (session.query(model.Collection)
+                        .filter(model.Collection.name == args.collection)
+                        .one())
 
-        crawler.crawl_recursive(session, args.root, collection=args.collection)
+        crawler.crawl_recursive(session, args.root, collection=c)
