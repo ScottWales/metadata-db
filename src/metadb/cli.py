@@ -225,8 +225,8 @@ class collection_report_cmd(object):
                             Path.uid,
                             func.sum(Path.size).label('size'))
                 .join(Collection.paths)
+                .filter(Path.uid != None)
                 .group_by(Collection.name, Path.uid)
-                .filter(Path.uid is not None)
                 )
 
         t = pandas.read_sql_query(q.statement, q.session.bind)
