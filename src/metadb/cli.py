@@ -27,6 +27,7 @@ from inspect import getdoc
 import os
 import glob
 import sys
+import pandas
 
 
 def cli(argv=sys.argv[1:], session=None):
@@ -220,12 +221,24 @@ class collection_report_cmd(object):
     def __call__(self, args, session):
         from .model import Collection, Path
         import pwd
-        q = (session.query(Collection.name, Path.uid, func.sum(Path.size))
+        q = (session.query(Collection.name.label('collection'),
+                            Path.uid,
+                            func.sum(Path.size).label('size'))
                 .join(Collection.paths)
                 .group_by(Collection.name, Path.uid)
                 .filter(Path.uid is not None)
                 )
-        for n, u, s in q:
-            p = pwd.getpwuid(u)
-            print(n, p.pw_gecos, p.pw_name, util.size_str(s))
+
+        t = pandas.read_sql_query(q.statement, q.session.bind)
+
+        def get_name(uid):
+            return pwd.getpwuid(uid).pw_gecos
+        def get_user(uid):
+            return pwd.getpwuid(uid).pw_name
+
+        t['name'] = t['uid'].map(get_name)
+        t['user'] = t['uid'].map(get_user)
+        t['size'] = t['size'].map(util.size_str)
+
+        print(t[['collection','user','name','size']].set_index(['collection','user']))
 
