@@ -223,6 +223,7 @@ class collection_report_cmd(object):
         q = (session.query(Collection.name, Path.uid, func.sum(Path.size))
                 .join(Collection.paths)
                 .group_by(Collection.name, Path.uid)
+                .filter(Path.uid is not None)
                 )
         for n, u, s in q:
             p = pwd.getpwuid(u)
