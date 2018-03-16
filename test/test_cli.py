@@ -17,6 +17,7 @@ from __future__ import print_function
 from metadb.cli import cli
 from metadb.model import *
 
+from unittest.mock import patch
 
 def test_collection_cmd(session):
     cli(argv='collection --name a'.split(), session=session)
@@ -33,3 +34,10 @@ def test_import_to_collection(session):
 
     q = session.query(Path).one()
     assert q.collections == [c]
+
+
+def test_crawler(session):
+    with patch('metadb.cli.crawler.crawl_recursive') as crawler:
+        cli(argv='crawl --collection a foo'.split(), session=session)
+        crawler.assert_called_once_with(session, 'foo', collection='a')
+

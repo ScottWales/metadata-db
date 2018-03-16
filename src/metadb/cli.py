@@ -18,6 +18,7 @@ import metadb.db as db
 import metadb.io as io
 import metadb.query as query
 import metadb.model as model
+import metadb.crawler as crawler
 from sqlalchemy.orm import aliased
 from argparse import ArgumentParser
 from inspect import getdoc
@@ -45,6 +46,7 @@ def cli(argv=sys.argv[1:], session=None):
     import_cmd().setup_parser(subparser)
     list_cmd().setup_parser(subparser)
     collection_cmd().setup_parser(subparser)
+    crawl_cmd().setup_parser(subparser)
 
     args = parser.parse_args(argv)
 
@@ -164,3 +166,30 @@ class list_cmd(object):
 
         for path, title in q:
             print(path, '|', title)
+
+
+class crawl_cmd(object):
+    """
+    Crawl the filesystem to update the database
+    """
+
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('crawl',
+                                      help="Crawl the filesystem",
+                                      description=getdoc(self))
+
+        parser.add_argument(
+                'root',
+                help='Root path'
+                )
+
+        parser.add_argument(
+                '--collection',
+                help='Collection name'
+                )
+
+        parser.set_defaults(command=self)
+
+    def __call__(self, args, session):
+
+        crawler.crawl_recursive(session, args.root, collection=args.collection)

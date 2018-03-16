@@ -17,7 +17,7 @@ from __future__ import print_function
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy import ForeignKey, Table, UniqueConstraint
+from sqlalchemy import ForeignKey, Table, UniqueConstraint, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
@@ -68,6 +68,11 @@ class Path(Base):
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
     path = Column(Text, unique=True)
+    mtime = Column(Integer)
+    uid = Column(Integer)
+    gid = Column(Integer)
+    size = Column(Integer)
+    last_seen = Column(Integer)
 
     meta = relationship('Metadata', back_populates='paths')
     collections = relationship('Collection', secondary=path_to_collection,
@@ -76,6 +81,18 @@ class Path(Base):
     @property
     def basename(self):
         return os.path.basename(self.path)
+
+    def update_stat(self, stat):
+        import stat as st
+
+        if self.meta is not None and self.mtime < stat[st.ST_MTIME]:
+            # Metadata might have changed
+            self.meta = None
+
+        self.mtime = stat[st.ST_MTIME]
+        self.uid = stat[st.ST_UID]
+        self.gid = stat[st.ST_GID]
+        self.size = stat[st.ST_SIZE]
 
 
 class Metadata(Base):
