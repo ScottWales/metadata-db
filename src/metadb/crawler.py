@@ -23,10 +23,20 @@ def crawl_recursive(session, basedir, collection=None):
     basedir = os.path.abspath(basedir)
 
     for entry in os.scandir(basedir):
+        print(entry.path)
         p = find_or_create(session, Path, path=entry.path)
 
-        p.update_stat(entry.stat())
-
-        if entry.is_dir():
-            crawl_recursive(session, entry, collection)
+        try:
+            p.update_stat(entry.stat())
+            if entry.is_dir() and not entry.is_symlink():
+                crawl_recursive(session, entry, collection)
+        except PermissionError:
+            # Not readable
+            pass
+        except FileNotFoundError:
+            # Broken symlink
+            pass
+        except OSError:
+            # Someting odd happened
+            pass
 
