@@ -19,7 +19,9 @@ import metadb.io as io
 import metadb.query as query
 import metadb.model as model
 import metadb.crawler as crawler
+import metadb.util as util
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql import func
 from argparse import ArgumentParser
 from inspect import getdoc
 import os
@@ -46,6 +48,7 @@ def cli(argv=sys.argv[1:], session=None):
     import_cmd().setup_parser(subparser)
     list_cmd().setup_parser(subparser)
     collection_cmd().setup_parser(subparser)
+    collection_report_cmd().setup_parser(subparser)
     crawl_cmd().setup_parser(subparser)
 
     args = parser.parse_args(argv)
@@ -196,3 +199,32 @@ class crawl_cmd(object):
                         .one())
 
         crawler.crawl_recursive(session, args.root, collection=c)
+
+
+class collection_report_cmd(object):
+    """
+    Print information about a collection
+    """
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('collection report',
+                                      help="Print collection info",
+                                      description=getdoc(self))
+
+        parser.add_argument(
+                '--collection',
+                help='Collection name'
+                )
+
+        parser.set_defaults(command=self)
+
+    def __call__(self, args, session):
+        from .model import Collection, Path
+        import pwd
+        q = (session.query(Collection.name, Path.uid, func.sum(Path.size))
+                .join(Collection.paths)
+                .group_by(Collection.name, Path.uid)
+                )
+        for n, u, s in q:
+            p = pwd.getpwuid(u)
+            print(n, p.pw_gecos, p.pw_name, util.size_str(s))
+
