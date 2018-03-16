@@ -33,7 +33,7 @@ def test_import_to_collection(session):
     cli(argv='import --collection a foo'.split(), session=session)
 
     q = session.query(Path).one()
-    assert q.collections == [c]
+    assert q.collections == set((c,))
 
 
 def test_crawler(session):

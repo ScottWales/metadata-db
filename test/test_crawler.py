@@ -29,6 +29,7 @@ def test_crawler(session, tmpdir):
     # There should be an entry for the test file
     p = session.query(Path).filter(Path.path == str(a)).one()
     assert p.size == len('hello')
+    assert c in p.collections
 
     # There should be one path
     assert session.query(Path).count() == 1

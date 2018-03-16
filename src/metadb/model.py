@@ -76,6 +76,7 @@ class Path(Base):
 
     meta = relationship('Metadata', back_populates='paths')
     collections = relationship('Collection', secondary=path_to_collection,
+                               collection_class=set,
                                back_populates='paths')
 
     @property

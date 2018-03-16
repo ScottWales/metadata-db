@@ -25,6 +25,7 @@ def crawl_recursive(session, basedir, collection=None):
     for entry in os.scandir(basedir):
         print(entry.path)
         p = find_or_create(session, Path, path=entry.path)
+        p.collections.add(collection)
 
         try:
             p.update_stat(entry.stat())
