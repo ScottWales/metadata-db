@@ -23,6 +23,12 @@ try:
 except ImportError:
     from scandir import scandir
 
+# FileNotFoundError not available in Python 2
+try:
+    FileNotFoundError
+except NameError:
+    PermissionError = IOError
+    FileNotFoundError = IOError
 
 def crawl_recursive(session, basedir, collection=None):
     basedir = os.path.abspath(basedir)
@@ -41,7 +47,4 @@ def crawl_recursive(session, basedir, collection=None):
             pass
         except FileNotFoundError:
             # Broken symlink
-            pass
-        except OSError:
-            # Someting odd happened
             pass
