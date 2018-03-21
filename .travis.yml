@@ -3,7 +3,7 @@ python:
     - '2.7'
     - '3.6'
 install:
-    - pip install --upgrade pytest coverage pytest-cov
+    - pip install --upgrade setuptools pytest coverage pytest-cov
     - pip install -e .
 before_script:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
