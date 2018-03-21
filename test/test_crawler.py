@@ -18,7 +18,7 @@ from metadb.crawler import *
 from metadb.model import Collection, Path
 
 
-def test_crawler(session, tmpdir):
+def test_crawler_updates(session, tmpdir):
     c = Collection(name='c')
     session.add(c)
 
@@ -53,3 +53,34 @@ def test_crawler(session, tmpdir):
     # The size should have changed
     assert p.size == len('goodbye')
     assert p.last_seen > last_seen
+
+
+def test_crawler_recursive(session, tmpdir):
+    col = Collection(name='c')
+    session.add(col)
+
+    a = tmpdir.mkdir('a')
+    b = a.join('b')
+    c = tmpdir.mkdir('c')
+    b.write('hello')
+
+    crawl_recursive(session, str(tmpdir), collection=col)
+    assert session.query(Path).count() == 3
+
+
+def test_crawler_errors(session, tmpdir):
+    col = Collection(name='c')
+    session.add(col)
+
+    a = tmpdir.mkdir('a')
+
+    # Unreadable file
+    b = a.join('b')
+    b.write('hello')
+    b.chmod(0000)
+
+    # Link to nowhere
+    c = a.join('c')
+    c.mksymlinkto('nowhere')
+
+    crawl_recursive(session, str(tmpdir), collection=col)

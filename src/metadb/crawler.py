@@ -28,7 +28,7 @@ def crawl_recursive(session, basedir, collection=None):
     basedir = os.path.abspath(basedir)
 
     for entry in scandir(basedir):
-        print(entry.path)
+        print(entry.path, type(entry.path))
         p = find_or_create(session, Path, path=entry.path)
         p.collections.add(collection)
 
