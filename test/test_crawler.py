@@ -24,7 +24,7 @@ def test_crawler(session, tmpdir):
     # Create a test file and crawl the directory
     a = tmpdir.join('a')
     a.write('hello')
-    crawl_recursive(session, tmpdir, collection=c)
+    crawl_recursive(session, str(tmpdir), collection=c)
 
     # There should be an entry for the test file
     p = session.query(Path).filter(Path.path == str(a)).one()
@@ -38,14 +38,14 @@ def test_crawler(session, tmpdir):
     # Create a new file
     b = tmpdir.join('b')
     b.write('hello')
-    crawl_recursive(session, tmpdir, collection=c)
+    crawl_recursive(session, str(tmpdir), collection=c)
 
     # There should now be two paths present
     assert session.query(Path).count() == 2
 
     # Update an existing file
     a.write('goodbye')
-    crawl_recursive(session, tmpdir, collection=c)
+    crawl_recursive(session, str(tmpdir), collection=c)
 
     p = session.query(Path).filter(Path.path == str(a)).one()
 
