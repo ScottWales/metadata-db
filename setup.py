@@ -14,6 +14,7 @@ setup(
             'sqlalchemy',
             'netcdf4',
             'flask',
+            'pandas',
             ],
         entry_points={
             'console_scripts': [
