@@ -18,11 +18,16 @@ from .model import Path
 from .query import find_or_create
 import os
 
+try:
+    from os import scandir
+except ImportError:
+    from scandir import scandir
+
 
 def crawl_recursive(session, basedir, collection=None):
     basedir = os.path.abspath(basedir)
 
-    for entry in os.scandir(basedir):
+    for entry in scandir(basedir):
         print(entry.path)
         p = find_or_create(session, Path, path=entry.path)
         p.collections.add(collection)

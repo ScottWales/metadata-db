@@ -16,6 +16,7 @@ setup(
             'flask',
             'pandas',
             'mock;python_version<"3"',
+            'scandir;python_version<"3"',
             ],
         entry_points={
             'console_scripts': [
