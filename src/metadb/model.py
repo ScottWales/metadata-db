@@ -152,7 +152,7 @@ class Dimension(Base):
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
     name = Column(String)
-    size = Column(String)
+    size = Column(Integer)
 
     meta = relationship('Metadata', back_populates='dimensions')
 
