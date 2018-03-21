@@ -24,7 +24,8 @@ import os
 
 @pytest.fixture(scope='session')
 def database():
-    conn = db.connect(os.environ.get('TEST_DATABASE','sqlite:///:memory:'), debug=True, init=True)
+    conn = db.connect(os.environ.get(
+        'TEST_DATABASE', 'sqlite:///:memory:'), debug=True, init=True)
     yield conn
     conn.close()
 
