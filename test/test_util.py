@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2018 Scott Wales
+# Copyright 2018 ARC Centre of Excellence for Climate Extremes
 # author: Scott Wales <scott.wales@unimelb.edu.au>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,9 @@
 # limitations under the License.
 from __future__ import print_function
 
+from metadb.util import *
 
-def size_str(size):
-    from math import log, floor
-    if size > 0:
-        r = int(floor(log(size, 1000)))
-    else:
-        r = 0
 
-    prefix = [' ', 'k', 'M', 'G', 'T']
-    return "%.1f %sB" % (size / 1000**r, prefix[r])
+def test_size_str():
+    assert size_str(0) == '0.0  B'
+    assert size_str(1000**3) == '1.0 GB'
