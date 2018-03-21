@@ -18,12 +18,16 @@ import metadb.db as db
 import metadb.io as io
 import metadb.query as query
 import metadb.model as model
+import metadb.crawler as crawler
+import metadb.util as util
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql import func
 from argparse import ArgumentParser
 from inspect import getdoc
 import os
 import glob
 import sys
+import pandas
 
 
 def cli(argv=sys.argv[1:], session=None):
@@ -45,6 +49,8 @@ def cli(argv=sys.argv[1:], session=None):
     import_cmd().setup_parser(subparser)
     list_cmd().setup_parser(subparser)
     collection_cmd().setup_parser(subparser)
+    collection_report_cmd().setup_parser(subparser)
+    crawl_cmd().setup_parser(subparser)
 
     args = parser.parse_args(argv)
 
@@ -73,7 +79,7 @@ class collection_cmd(object):
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        c = model.Collection(name=args.name)
+        c = query.find_or_create(session, model.Collection, name=args.name)
         session.add(c)
 
 
@@ -164,3 +170,77 @@ class list_cmd(object):
 
         for path, title in q:
             print(path, '|', title)
+
+
+class crawl_cmd(object):
+    """
+    Crawl the filesystem to update the database
+    """
+
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('crawl',
+                                      help="Crawl the filesystem",
+                                      description=getdoc(self))
+
+        parser.add_argument(
+            'root',
+            help='Root path'
+        )
+
+        parser.add_argument(
+            '--collection',
+            help='Collection name'
+        )
+
+        parser.set_defaults(command=self)
+
+    def __call__(self, args, session):
+        c = (session.query(model.Collection)
+             .filter(model.Collection.name == args.collection)
+             .one())
+
+        crawler.crawl_recursive(session, args.root, collection=c)
+
+
+class collection_report_cmd(object):
+    """
+    Print information about a collection
+    """
+
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('collection report',
+                                      help="Print collection info",
+                                      description=getdoc(self))
+
+        parser.add_argument(
+            '--collection',
+            help='Collection name'
+        )
+
+        parser.set_defaults(command=self)
+
+    def __call__(self, args, session):
+        from .model import Collection, Path
+        import pwd
+        q = (session.query(Collection.name.label('collection'),
+                           Path.uid,
+                           func.sum(Path.size).label('size'))
+             .join(Collection.paths)
+             .filter(Path.uid != None)
+             .group_by(Collection.name, Path.uid)
+             )
+
+        t = pandas.read_sql_query(q.statement, q.session.bind)
+
+        def get_name(uid):
+            return pwd.getpwuid(uid).pw_gecos
+
+        def get_user(uid):
+            return pwd.getpwuid(uid).pw_name
+
+        t['name'] = t['uid'].map(get_name)
+        t['user'] = t['uid'].map(get_user)
+        t['size'] = t['size'].map(util.size_str)
+
+        print(t[['collection', 'user', 'name', 'size']
+                ].set_index(['collection', 'user']))

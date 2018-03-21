@@ -64,5 +64,6 @@ def find_or_create(session, klass, **kwargs):
 
     if r is None:
         r = klass(**kwargs)
+        session.add(r)
 
     return r

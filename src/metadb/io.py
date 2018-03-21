@@ -28,7 +28,7 @@ except NameError:
     FileNotFoundError = IOError
 
 
-def read_general(path, session, collections=[]):
+def read_general(path, session, collections=set()):
     """
     General purpose metadata reader
     """
@@ -43,7 +43,7 @@ def read_general(path, session, collections=[]):
         size = -1
 
     path = find_or_create(session, Path, path=path)
-    path.collections.extend(collections)
+    path.collections.update(collections)
 
     meta = path.meta
     if meta is not None:

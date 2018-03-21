@@ -25,7 +25,7 @@ def test_db(session):
 
 def test_collection(session):
     c = Collection(name='c')
-    p = Path(collections=[c])
+    p = Path(collections=set((c,)))
     session.add(p)
 
     q = (session.query(Path)
