@@ -18,6 +18,9 @@ setup(
         'mock;python_version<"3"',
         'scandir;python_version<"3"',
     ],
+    extras_require = {
+        'postgres': ['psycopg2']
+    },
     entry_points={
         'console_scripts': [
             'metadb = metadb.cli:cli',
