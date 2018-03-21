@@ -10,3 +10,7 @@ dependencies:
     - pytest
     - sphinx
     - netcdf4
+    - flask
+    - pandas
+    - mock
+    - scandir

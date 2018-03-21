@@ -18,6 +18,10 @@ from .model import Path
 from .query import find_or_create
 import os
 
+"""
+Filesystem crawler
+"""
+
 try:
     from os import scandir
 except ImportError:
@@ -39,6 +43,14 @@ def abspath(path):
 
 
 def crawl_recursive(session, basedir, collection=None):
+    """
+    Recursively crawl a directory, creating :py:class:`~metadb.model.Path` s in
+    the database
+
+    :param session: SQLAlchemy session
+    :param basedir: Base directory to crawl
+    :param collection: Collection to put the found paths in
+    """
     basedir = abspath(basedir)
 
     for entry in scandir(basedir):

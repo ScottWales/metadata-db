@@ -49,42 +49,68 @@ path_to_collection = Table('path_to_collection', Base.metadata,
 
 class Collection(Base):
     """
-    Collection of files
+    A collection of files
+
+    A single file can be part of multiple collections
+
     """
     __tablename__ = 'collection'
 
     id = Column(Integer, primary_key=True)
+
+    #: Collection name
     name = Column(String, unique=True)
 
+    #: :py:class:`Path` s in this collection
     paths = relationship('Path', secondary=path_to_collection,
                          back_populates='collections')
 
 
 class Path(Base):
     """
-    File path
+    Filesystem path
+
+    The same path can point to the same file contents (e.g. from symlinks)
     """
     __tablename__ = 'path'
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
+
+    #: str Filesystem path
     path = Column(Text, unique=True)
+
+    #: int os.stat() mtime
     mtime = Column(Integer)
+    #: int os.stat() uid
     uid = Column(Integer)
+    #: int os.stat() gid
     gid = Column(Integer)
+    #: int os.stat() size
     size = Column(Integer)
+    #: Unix time when the path was last seen
     last_seen = Column(Float)
 
+    #: :py:class:`Metadata` of the path's content
     meta = relationship('Metadata', back_populates='paths')
+    #: :py:class:`Collection` s that the path is part of
     collections = relationship('Collection', secondary=path_to_collection,
                                collection_class=set,
                                back_populates='paths')
 
     @property
     def basename(self):
+        """
+        The basename of the path
+        """
         return os.path.basename(self.path)
 
     def update_stat(self, stat):
+        """
+        Update the path's stat data
+
+        :param stat: Stat values to use in the update
+        """
         import stat as st
 
         if self.meta is not None and self.mtime < stat[st.ST_MTIME]:
@@ -105,25 +131,30 @@ class Metadata(Base):
     __tablename__ = 'metadata'
 
     id = Column(Integer, primary_key=True)
+    #: sha256 checksum
     sha256 = Column(String, unique=True)
     mtime = Column(Integer)
     size = Column(Integer)
 
+    #: :py:class:`Dimension` s in the file (dict)
     dimensions = relationship('Dimension',
                               back_populates='meta',
                               collection_class=attribute_mapped_collection(
                                   'name'),
                               )
+    #: :py:class:`Variable` s in the file (dict)
     variables = relationship('Variable',
                              back_populates='meta',
                              collection_class=attribute_mapped_collection(
                                  'name'),
                              )
+    #: :py:class:`Attribute` s of the file (dict)
     attributes = relationship('Attribute',
                               secondary=meta_to_attr,
                               collection_class=attribute_mapped_collection(
                                   'key'),
                               )
+    #: :py:class:`Path` s to the file
     paths = relationship('Path', back_populates='meta')
 
     @property
@@ -135,10 +166,19 @@ class Metadata(Base):
 
 
 class Attribute(Base):
+    """
+    A generic attribute
+
+    Can be attached to either :py:class:`Metadata` or :py:class:`Variable`
+
+    Read-only (attributes in the database are de-duplicated)
+    """
     __tablename__ = 'attribute'
 
     id = Column(Integer, primary_key=True)
+    #: Attribute name
     key = Column(String)
+    #: Attribute value
     value = Column(Text)
 
     __table_args__ = (
@@ -147,30 +187,46 @@ class Attribute(Base):
 
 
 class Dimension(Base):
+    """
+    A dimension in a file (c.f. netCDF)
+    """
     __tablename__ = 'dimension'
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
+
+    #: Dimension name
     name = Column(String)
+    #: Dimension size
     size = Column(Integer)
 
+    #: :py:class:`Metadata` this is part of
     meta = relationship('Metadata', back_populates='dimensions')
 
 
 class Variable(Base):
+    """
+    A variable in a file (c.f. netCDF)
+    """
     __tablename__ = 'variable'
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
+
+    #: Variable name
     name = Column(String)
+    #: Variable type
     type = Column(String)
 
+    #: :py:class:`Metadata` this is part of
     meta = relationship('Metadata', back_populates='variables')
+    #: :py:class:`Attribute` s of this variable (dict)
     attributes = relationship('Attribute',
                               secondary=var_to_attr,
                               collection_class=attribute_mapped_collection(
                                   'key'),
                               )
+    #: :py:class:`Dimension` s of this variable
     dimensions = relationship('Dimension',
                               secondary=var_to_dim,
                               order_by='var_to_dim.c.ndim',
