@@ -45,4 +45,3 @@ def crawl_recursive(session, basedir, collection=None):
         except OSError:
             # Someting odd happened
             pass
-

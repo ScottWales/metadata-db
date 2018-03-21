@@ -17,6 +17,7 @@ from __future__ import print_function
 from metadb.crawler import *
 from metadb.model import Collection, Path
 
+
 def test_crawler(session, tmpdir):
     c = Collection(name='c')
     session.add(c)

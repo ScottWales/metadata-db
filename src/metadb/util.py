@@ -15,6 +15,7 @@
 # limitations under the License.
 from __future__ import print_function
 
+
 def size_str(size):
     from math import log, floor
     r = int(floor(log(size, 1000)))

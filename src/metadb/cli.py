@@ -183,21 +183,21 @@ class crawl_cmd(object):
                                       description=getdoc(self))
 
         parser.add_argument(
-                'root',
-                help='Root path'
-                )
+            'root',
+            help='Root path'
+        )
 
         parser.add_argument(
-                '--collection',
-                help='Collection name'
-                )
+            '--collection',
+            help='Collection name'
+        )
 
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
         c = (session.query(model.Collection)
-                        .filter(model.Collection.name == args.collection)
-                        .one())
+             .filter(model.Collection.name == args.collection)
+             .one())
 
         crawler.crawl_recursive(session, args.root, collection=c)
 
@@ -206,15 +206,16 @@ class collection_report_cmd(object):
     """
     Print information about a collection
     """
+
     def setup_parser(self, subparser):
         parser = subparser.add_parser('collection report',
                                       help="Print collection info",
                                       description=getdoc(self))
 
         parser.add_argument(
-                '--collection',
-                help='Collection name'
-                )
+            '--collection',
+            help='Collection name'
+        )
 
         parser.set_defaults(command=self)
 
@@ -222,17 +223,18 @@ class collection_report_cmd(object):
         from .model import Collection, Path
         import pwd
         q = (session.query(Collection.name.label('collection'),
-                            Path.uid,
-                            func.sum(Path.size).label('size'))
-                .join(Collection.paths)
-                .filter(Path.uid != None)
-                .group_by(Collection.name, Path.uid)
-                )
+                           Path.uid,
+                           func.sum(Path.size).label('size'))
+             .join(Collection.paths)
+             .filter(Path.uid != None)
+             .group_by(Collection.name, Path.uid)
+             )
 
         t = pandas.read_sql_query(q.statement, q.session.bind)
 
         def get_name(uid):
             return pwd.getpwuid(uid).pw_gecos
+
         def get_user(uid):
             return pwd.getpwuid(uid).pw_name
 
@@ -240,5 +242,5 @@ class collection_report_cmd(object):
         t['user'] = t['uid'].map(get_user)
         t['size'] = t['size'].map(util.size_str)
 
-        print(t[['collection','user','name','size']].set_index(['collection','user']))
-
+        print(t[['collection', 'user', 'name', 'size']
+                ].set_index(['collection', 'user']))

@@ -22,6 +22,7 @@ try:
 except ImportError:
     from mock import patch
 
+
 def test_collection_cmd(session):
     cli(argv='collection --name a'.split(), session=session)
 
@@ -32,6 +33,7 @@ def test_collection_cmd(session):
 
     q = session.query(Collection)
     assert q.count() == 1
+
 
 def test_import_to_collection(session):
     c = Collection(name='a')
@@ -50,4 +52,3 @@ def test_crawler(session):
 
         cli(argv='crawl --collection a foo'.split(), session=session)
         crawler.assert_called_once_with(session, 'foo', collection=c)
-
