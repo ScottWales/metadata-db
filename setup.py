@@ -15,6 +15,7 @@ setup(
             'netcdf4',
             'flask',
             'pandas',
+            'mock;python_version<3',
             ],
         entry_points={
             'console_scripts': [

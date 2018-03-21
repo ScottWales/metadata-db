@@ -17,7 +17,10 @@ from __future__ import print_function
 from metadb.cli import cli
 from metadb.model import *
 
-from unittest.mock import patch
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 def test_collection_cmd(session):
     cli(argv='collection --name a'.split(), session=session)
