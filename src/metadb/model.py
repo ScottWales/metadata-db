@@ -16,7 +16,7 @@
 from __future__ import print_function
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Float
 from sqlalchemy import ForeignKey, Table, UniqueConstraint, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -73,7 +73,7 @@ class Path(Base):
     uid = Column(Integer)
     gid = Column(Integer)
     size = Column(Integer)
-    last_seen = Column(Integer)
+    last_seen = Column(Float)
 
     meta = relationship('Metadata', back_populates='paths')
     collections = relationship('Collection', secondary=path_to_collection,
