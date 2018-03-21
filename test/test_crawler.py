@@ -30,6 +30,7 @@ def test_crawler(session, tmpdir):
     p = session.query(Path).filter(Path.path == str(a)).one()
     assert p.size == len('hello')
     assert c in p.collections
+    last_seen = p.last_seen
 
     # There should be one path
     assert session.query(Path).count() == 1
@@ -47,4 +48,7 @@ def test_crawler(session, tmpdir):
     crawl_recursive(session, tmpdir, collection=c)
 
     p = session.query(Path).filter(Path.path == str(a)).one()
+
+    # The size should have changed
     assert p.size == len('goodbye')
+    assert p.last_seen > last_seen

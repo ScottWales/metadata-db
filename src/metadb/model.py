@@ -22,6 +22,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
 import os
+import time
 
 Base = declarative_base()
 
@@ -94,6 +95,7 @@ class Path(Base):
         self.uid = stat[st.ST_UID]
         self.gid = stat[st.ST_GID]
         self.size = stat[st.ST_SIZE]
+        self.last_seen = time.time()
 
 
 class Metadata(Base):
