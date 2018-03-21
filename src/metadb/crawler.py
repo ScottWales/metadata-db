@@ -28,7 +28,7 @@ try:
     FileNotFoundError
 except NameError:
     PermissionError = IOError
-    FileNotFoundError = IOError
+    FileNotFoundError = OSError
 
 
 def abspath(path):
@@ -49,7 +49,7 @@ def crawl_recursive(session, basedir, collection=None):
         try:
             p.update_stat(entry.stat())
             if entry.is_dir() and not entry.is_symlink():
-                crawl_recursive(session, entry, collection)
+                crawl_recursive(session, entry.path, collection)
         except PermissionError:
             # Not readable
             pass
