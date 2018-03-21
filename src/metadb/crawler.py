@@ -30,11 +30,19 @@ except NameError:
     PermissionError = IOError
     FileNotFoundError = IOError
 
+
+def abspath(path):
+    try:
+        return os.path.abspath(path)
+    except AttributeError:
+        return os.path.abspath(str(path))
+
+
 def crawl_recursive(session, basedir, collection=None):
-    basedir = os.path.abspath(basedir)
+    basedir = abspath(basedir)
 
     for entry in scandir(basedir):
-        print(entry.path, type(entry.path))
+        print(entry.path)
         p = find_or_create(session, Path, path=entry.path)
         p.collections.add(collection)
 
