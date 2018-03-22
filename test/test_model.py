@@ -45,3 +45,40 @@ def test_path(session):
     assert p.basename == 'bar'
 
     path, meta = session.query(Path, Metadata).join(Path.meta).one()
+
+
+def test_path_closure(session):
+    a = Path(basename_='a')
+
+    b = Path(basename_='b', parent=a)
+    session.add(b)
+    session.commit()
+
+    assert [x.id for x in a.path_components] == [a.id]
+    assert [x.id for x in b.path_components] == [a.id, b.id]
+
+def test_cte(session):
+    a = Path(basename_='a')
+    b = Path(basename_='b', parent=a)
+    c = Path(basename_='c', parent=b)
+    session.add(c)
+    session.commit()
+
+    assert c.parent_id is not None
+    assert c.parent_id == b.id
+    assert b.parent_id == a.id
+    assert a.parent_id is None
+
+    q = session.query(path_closure)
+
+    r = q.all()
+
+    assert (a.id,a.id,0) in r
+    assert (b.id,b.id,0) in r
+    assert (c.id,c.id,0) in r
+
+    assert (b.id,a.id,1) in r
+
+    assert (c.id,b.id,1) in r
+    assert (c.id,a.id,2) in r
+

@@ -21,6 +21,8 @@ from sqlalchemy import ForeignKey, Table, UniqueConstraint, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
+from sqlalchemy import select
+from sqlalchemy.sql.expression import literal
 import os
 import time
 
@@ -45,6 +47,11 @@ path_to_collection = Table('path_to_collection', Base.metadata,
                            Column('coll_id', Integer,
                                   ForeignKey('collection.id')),
                            )
+#path_closure = Table('path_closure', Base.metadata,
+#                     Column('child_id', Integer, ForeignKey('path.id')),
+#                     Column('parent_id', Integer, ForeignKey('path.id')),
+#                     Column('depth', Integer),
+#                     )
 
 
 class Collection(Base):
@@ -76,9 +83,12 @@ class Path(Base):
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
+    parent_id = Column(Integer, ForeignKey('path.id'))
 
     #: str Filesystem path
     path = Column(Text, unique=True)
+    #: str Path basename
+    basename_ = Column(Text)
 
     #: int os.stat() mtime
     mtime = Column(Integer)
@@ -97,6 +107,8 @@ class Path(Base):
     collections = relationship('Collection', secondary=path_to_collection,
                                collection_class=set,
                                back_populates='paths')
+
+    parent = relationship('Path', remote_side=[id], uselist=False)
 
     @property
     def basename(self):
@@ -233,3 +245,42 @@ class Variable(Base):
                               collection_class=OrderingList(
                                   'var_to_dim.c.ndim'),
                               )
+
+def _make_path_closure():
+    """
+    Helper function to construct the path closure CTE
+    """
+    from sqlalchemy.orm import aliased
+
+    recursive = (select([
+        Path.id.label("child_id"),
+        Path.id.label("parent_id"),
+        literal(0).label('depth'),
+        ])
+        .cte(name='closure', recursive=True)
+        )
+
+    path_alias = aliased(Path)
+    r_alias = aliased(recursive, 'r')
+
+    recursive = recursive.union_all(
+            select([
+                path_alias.id.label('child_id'),
+                r_alias.c.parent_id,
+                (r_alias.c.depth+1).label('depth'),
+            ])
+            .where(path_alias.parent_id == r_alias.c.child_id)
+        )
+
+    return recursive.alias()
+
+
+path_closure = _make_path_closure()
+
+Path.path_components = relationship(Path, 
+                                    secondary=path_closure,
+                                    primaryjoin=Path.id == path_closure.c.child_id,
+                                    secondaryjoin=Path.id == path_closure.c.parent_id,
+                                    order_by=path_closure.c.depth.desc(),
+                                    viewonly=True,
+                                    )
