@@ -4,7 +4,7 @@ addons:
         sources:
             - travis-ci/sqlite3
         packages:
-            - sqlite3
+            - sqlite3=3.7.15.1-1~travis1
 python:
     - '2.7'
     - '3.6'
