@@ -17,6 +17,8 @@ from __future__ import print_function
 
 from metadb.model import *
 
+import pytest
+
 
 def test_db(session):
     q = session.query(Metadata)
@@ -48,6 +50,10 @@ def test_path(session):
 
 
 def test_path_closure(session):
+    if (session.bind.dialect.name == 'sqlite' and
+            session.bind.dialect.server_version_info < (3, 8, 3)):
+        pytest.skip("Sqlite too old")
+
     a = Path(basename_='a')
 
     b = Path(basename_='b', parent=a)
@@ -57,7 +63,12 @@ def test_path_closure(session):
     assert [x.id for x in a.path_components] == [a.id]
     assert [x.id for x in b.path_components] == [a.id, b.id]
 
+
 def test_cte(session):
+    if (session.bind.dialect.name == 'sqlite' and
+            session.bind.dialect.server_version_info < (3, 8, 3)):
+        pytest.skip("Sqlite too old")
+
     a = Path(basename_='a')
     b = Path(basename_='b', parent=a)
     c = Path(basename_='c', parent=b)
