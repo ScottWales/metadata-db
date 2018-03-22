@@ -1,10 +1,4 @@
 language: python
-addons:
-    apt:
-        sources:
-            - travis-ci/sqlite3
-        packages:
-            - sqlite3=3.7.15.1-1~travis1
 python:
     - '2.7'
     - '3.6'
@@ -21,6 +15,7 @@ before_script:
     - chmod +x ./cc-test-reporter
     - ./cc-test-reporter before-build
     - psql -c 'create database travis_ci_test;' -U postgres
+    - sqlite3 --version
 script:
     - py.test --cov=metadb --cov-report xml
 after_script:
