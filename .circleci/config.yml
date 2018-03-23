@@ -1,10 +1,16 @@
 run_pytest: &run_pytest
     steps:
         - checkout
-        - run: pip install -e .
+        - run: virtualenv venv
+        - run:
+            name: install
+            command: |
+                source venv/bin/activate
+                pip install -e .
         - run:
             name: test
             command: |
+                source venv/bin/activate
                 mkdir test-report
                 py.test --junitxml=test-report/junit.xml
         - store_test_results:
