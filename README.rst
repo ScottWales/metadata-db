@@ -1,13 +1,16 @@
 metadata-db
 ===========
 
-.. image:: https://travis-ci.org/ScottWales/metadata-db.svg?branch=master
-    :target: https://travis-ci.org/ScottWales/metadata-db
-    :alt: Test Status
+.. image:: https://img.shields.io/travis/ScottWales/metadata-db.svg
+   :target: https://travis-ci.org/ScottWales/metadata-db
+   :alt: Travis CI Status
+.. image:: https://img.shields.io/circleci/project/github/ScottWales/metadata-db.svg
+   :target: https://circleci.com/gh/ScottWales/metadata-db
+   :alt: Circle CI status
 .. image:: https://api.codeclimate.com/v1/badges/d5cc1000b0b6bc951ebb/test_coverage
    :target: https://codeclimate.com/github/ScottWales/metadata-db/test_coverage
    :alt: Test Coverage
-.. image:: https://api.codeclimate.com/v1/badges/d5cc1000b0b6bc951ebb/maintainability
+.. image:: https://img.shields.io/codeclimate/maintainability/ScottWales/metadata-db.svg
    :target: https://codeclimate.com/github/ScottWales/metadata-db/maintainability
    :alt: Maintainability
 
