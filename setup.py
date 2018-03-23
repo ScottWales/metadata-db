@@ -10,6 +10,10 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
+    package_data={
+        'metadb': ['templates/*.html'],
+        },
+
     install_requires=[
         'sqlalchemy',
         'netcdf4',
