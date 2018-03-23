@@ -6,7 +6,7 @@ run_pytest: &run_pytest
             name: install
             command: |
                 source venv/bin/activate
-                pip install -e .
+                pip install -e .[test]
         - run:
             name: test
             command: |

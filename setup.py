@@ -19,7 +19,8 @@ setup(
         'scandir;python_version<"3"',
     ],
     extras_require={
-        'postgres': ['psycopg2']
+        'postgres': ['psycopg2'],
+        'test': ['pytest'],
     },
     entry_points={
         'console_scripts': [
