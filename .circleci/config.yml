@@ -33,7 +33,7 @@ run_conda: &run_conda
         - run:
             name: build
             command: |
-                ~/conda/bin/conda build conda
+                ~/miniconda/bin/conda build conda/
 
 
 version: 2
