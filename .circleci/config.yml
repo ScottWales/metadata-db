@@ -1,0 +1,32 @@
+version: 2
+jobs:
+    python2:
+        docker:
+            - image: circleci/python:2
+        steps:
+            - checkout
+            - run: pip install -e .
+            - run:
+                name: test
+                command: |
+                    mkdir test-report
+                    py.test --junitxml=test-report/junit.xml
+            - store_test_results:
+                path: test-report
+            - store_artifacts:
+                path: test-report
+    python3:
+        docker:
+            - image: circleci/python:3
+        steps:
+            - checkout
+            - run: pip install -e .
+            - run:
+                name: test
+                command: |
+                    mkdir test-report
+                    py.test --junitxml=test-report/junit.xml
+            - store_test_results:
+                path: test-report
+            - store_artifacts:
+                path: test-report
