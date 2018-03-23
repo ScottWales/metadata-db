@@ -1,0 +1,35 @@
+{% set data = load_setup_py_data() %}
+
+package:
+    name: metadb
+    version: {{ data.get('version') }}
+
+source:
+    git_url: ../
+
+build:
+    noarch_python: True
+
+requirements:
+    build:
+        - python
+    run:
+        - python
+        - sqlalchemy
+        - netcdf4
+        - flask
+        - pandas
+
+test:
+    source_files:
+        - test/**
+    requires:
+        - pytest
+    commands:
+        - py.test
+    imports:
+        - metadb
+
+about:
+    home: https://github.com/ScottWales/metadata-db
+    license_file: LICENSE

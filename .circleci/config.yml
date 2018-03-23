@@ -56,3 +56,4 @@ workflows:
         jobs:
             - python2
             - python3
+            - conda3
