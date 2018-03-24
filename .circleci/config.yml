@@ -11,8 +11,8 @@ run_pytest: &run_pytest
             name: test
             command: |
                 source venv/bin/activate
-                mkdir test-report
-                py.test --junitxml=test-report/junit.xml
+                mkdir -p test-report/pytest
+                py.test --junitxml=test-report/pytest/junit.xml
         - store_test_results:
             path: test-report
         - store_artifacts:
