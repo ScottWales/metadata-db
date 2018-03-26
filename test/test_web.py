@@ -53,8 +53,8 @@ def test_show_collection(test_app, session):
     c = model.Collection(name='foo')
     session.add(c)
 
-    pa = model.Path(path='/path/a')
-    pb = model.Path(path='/path/b')
+    pa = model.Path(basename='/path/a')
+    pb = model.Path(basename='b', parent=pa)
     c.paths = [pa, pb]
 
     r = test_app.get('/collection/foo')

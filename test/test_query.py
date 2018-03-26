@@ -49,3 +49,47 @@ def test_search_metadata(session):
     q = search_metadata(session, variable_attributes=[('a', 'v')])
     assert q.count() == 1
     assert q.one() == ma
+
+
+def test_find_path_from_parent(session):
+
+    base = Path(basename='base')
+    a = Path(basename='a', parent=base)
+
+    session.add(a)
+    session.commit()
+
+    q = find_path_from_parent(session, base, 'base/a')
+    assert q == a
+
+    base = Path(basename='/base')
+    a = Path(basename='a', parent=base)
+
+    session.add(a)
+    session.commit()
+
+    q = find_path_from_parent(session, base, '/base/a')
+    assert q == a
+
+
+def test_find_path(session):
+    base = Path(basename='base')
+    a = Path(basename='a', parent=base)
+
+    session.add(a)
+    session.commit()
+
+    q = find_path(session, 'base/a')
+    assert q == a
+
+    base = Path(basename='/base')
+    a = Path(basename='a', parent=base)
+
+    session.add(a)
+    session.commit()
+
+    q = find_path(session, '/base/a')
+    assert q == a
+
+    q = find_path(session, '/base')
+    assert q == base

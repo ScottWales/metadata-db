@@ -67,3 +67,60 @@ def find_or_create(session, klass, **kwargs):
         session.add(r)
 
     return r
+
+
+def find_path(session, path):
+    """
+    Returns a Path object to the given full path
+    """
+
+    components = path.split('/')
+    prefix = None
+    match = None
+
+    # Find the base path
+    for c in components:
+        if prefix == None:
+            prefix = c
+        else:
+            prefix = '/'.join((prefix, c))
+
+        print("prefix >%s<"%prefix)
+
+        # Check if this prefix matches an existing path
+        p = session.query(Path).filter(Path.basename == prefix).one_or_none()
+        if p is not None:
+            # Found a potential base path
+            match = find_path_from_parent(session, p, path)
+        if match is not None:
+            # Found a match
+            break
+
+    return match
+
+
+def find_path_from_parent(session, parent, path):
+    """
+    Checks the children of parent for a match to path, returning the child if
+    one is found
+    """
+
+    assert path.startswith(parent.basename)
+
+    remaining = path[len(parent.basename):]
+    components = remaining.split('/')[1:] # (exclude the first '/')
+
+    match = parent
+    for c in components:
+        # Does a child of 'match' match the next component?
+        print(c)
+        match = (session
+                .query(Path)
+                .filter_by(parent = match, basename = c)
+                .one_or_none())
+
+        if match is None:
+            # No match found
+            break
+
+    return match

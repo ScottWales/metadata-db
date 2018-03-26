@@ -38,15 +38,42 @@ def test_collection(session):
 
 
 def test_path(session):
-    p = Path(path='/foo/bar')
+    p = Path(basename='/foo/bar')
     session.add(p)
 
     m = Metadata(paths=[p])
     session.add(m)
 
-    assert p.basename == 'bar'
+    session.commit()
+
+    assert p.path == '/foo/bar'
 
     path, meta = session.query(Path, Metadata).join(Path.meta).one()
+
+    p1 = Path(basename='baz', parent=p)
+    session.add(p1)
+    session.commit()
+    
+    assert p1.path == '/foo/bar/baz'
+
+
+def test_path_property(database, session):
+    import metadb.model
+    a = Path(basename='a')
+    session.add(a)
+    session.commit()
+
+    q = metadb.model._path_path_property(a)
+    r = database.execute(q).fetchall()
+    assert r == [('a',)]
+
+    b = Path(basename='b', parent=a)
+    session.add(b)
+    session.commit()
+
+    q = metadb.model._path_path_property(b)
+    r = database.execute(q).fetchall()
+    assert r == [('a/b',)]
 
 
 def test_path_closure(session):
@@ -54,14 +81,21 @@ def test_path_closure(session):
             session.bind.dialect.server_version_info < (3, 8, 3)):
         pytest.skip("Sqlite too old")
 
-    a = Path(basename_='a')
+    a = Path(basename='a')
+    session.add(a)
+    session.commit()
 
-    b = Path(basename_='b', parent=a)
+    assert a.parent is None
+    assert a.path == 'a'
+
+    b = Path(basename='b', parent=a)
     session.add(b)
     session.commit()
 
     assert [x.id for x in a.path_components] == [a.id]
     assert [x.id for x in b.path_components] == [a.id, b.id]
+
+    assert b.path == 'a/b'
 
 
 def test_cte(session):
@@ -69,9 +103,9 @@ def test_cte(session):
             session.bind.dialect.server_version_info < (3, 8, 3)):
         pytest.skip("Sqlite too old")
 
-    a = Path(basename_='a')
-    b = Path(basename_='b', parent=a)
-    c = Path(basename_='c', parent=b)
+    a = Path(basename='a')
+    b = Path(basename='b', parent=a)
+    c = Path(basename='c', parent=b)
     session.add(c)
     session.commit()
 
