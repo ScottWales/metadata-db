@@ -28,22 +28,24 @@ except NameError:
     FileNotFoundError = IOError
 
 
-def read_general(path, session, collections=set()):
+def read_general(basename, session, parent=None, collections=set()):
     """
     General purpose metadata reader
     """
 
+    path = find_or_create(session, Path, basename=basename, parent=parent)
+    path.collections.update(collections)
+    session.add(path)
+    session.commit()
+
     try:
-        stat = os.stat(path)
+        stat = os.stat(path.path)
         mtime = stat[ST_MTIME]
         size = stat[ST_SIZE]
     except (FileNotFoundError, OSError):
         # E.g. OpenDAP URL
         mtime = -1
         size = -1
-
-    path = find_or_create(session, Path, path=path)
-    path.collections.update(collections)
 
     meta = path.meta
     if meta is not None:
@@ -56,7 +58,6 @@ def read_general(path, session, collections=set()):
         meta = Metadata(mtime=mtime, size=size)
         path.meta = meta
 
-    session.add(path)
 
     read_netcdf_metadata(path.path, path.meta, session)
 
