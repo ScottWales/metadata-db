@@ -295,6 +295,7 @@ def _path_path_property(path):
             .select_from(parent
                 .join(path_closure, parent.c.id == path_closure.c.parent_id))
             .order_by(path_closure.c.depth.desc()))
+    sub.alias('grouped_basename')
 
     q = (select([func.group_concat(sub.c.basename, '/')])
             .select_from(sub)
