@@ -10,6 +10,10 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
+    package_data={
+        'metadb': ['templates/*.html'],
+        },
+
     install_requires=[
         'sqlalchemy',
         'netcdf4',
@@ -19,7 +23,8 @@ setup(
         'scandir;python_version<"3"',
     ],
     extras_require={
-        'postgres': ['psycopg2']
+        'postgres': ['psycopg2'],
+        'test': ['pytest'],
     },
     entry_points={
         'console_scripts': [

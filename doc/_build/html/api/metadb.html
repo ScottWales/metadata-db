@@ -1,0 +1,628 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>metadb package &#8212; metadb  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="metadb" href="modules.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="metadb-package">
+<h1>metadb package<a class="headerlink" href="#metadb-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-metadb.cli">
+<span id="metadb-cli-module"></span><h2>metadb.cli module<a class="headerlink" href="#module-metadb.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="metadb.cli.cli">
+<code class="descclassname">metadb.cli.</code><code class="descname">cli</code><span class="sig-paren">(</span><em>argv=['-M', 'html', '.', '_build'], session=None</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Functions to store and retrieve metadata</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.cli.collection_cmd">
+<em class="property">class </em><code class="descclassname">metadb.cli.</code><code class="descname">collection_cmd</code><a class="headerlink" href="#metadb.cli.collection_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a new collection</p>
+<dl class="method">
+<dt id="metadb.cli.collection_cmd.setup_parser">
+<code class="descname">setup_parser</code><span class="sig-paren">(</span><em>subparser</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.collection_cmd.setup_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.cli.collection_report_cmd">
+<em class="property">class </em><code class="descclassname">metadb.cli.</code><code class="descname">collection_report_cmd</code><a class="headerlink" href="#metadb.cli.collection_report_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Print information about a collection</p>
+<dl class="method">
+<dt id="metadb.cli.collection_report_cmd.setup_parser">
+<code class="descname">setup_parser</code><span class="sig-paren">(</span><em>subparser</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.collection_report_cmd.setup_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.cli.crawl_cmd">
+<em class="property">class </em><code class="descclassname">metadb.cli.</code><code class="descname">crawl_cmd</code><a class="headerlink" href="#metadb.cli.crawl_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Crawl the filesystem to update the database</p>
+<dl class="method">
+<dt id="metadb.cli.crawl_cmd.setup_parser">
+<code class="descname">setup_parser</code><span class="sig-paren">(</span><em>subparser</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.crawl_cmd.setup_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.cli.import_cmd">
+<em class="property">class </em><code class="descclassname">metadb.cli.</code><code class="descname">import_cmd</code><a class="headerlink" href="#metadb.cli.import_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Import a file’s metadata</p>
+<dl class="method">
+<dt id="metadb.cli.import_cmd.setup_parser">
+<code class="descname">setup_parser</code><span class="sig-paren">(</span><em>subparser</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.import_cmd.setup_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.cli.list_cmd">
+<em class="property">class </em><code class="descclassname">metadb.cli.</code><code class="descname">list_cmd</code><a class="headerlink" href="#metadb.cli.list_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>List files in the catalogue, filtered by attribute values.</p>
+<p>Attribute constraints may be specified multiple times, resulting in an AND</p>
+<dl class="method">
+<dt id="metadb.cli.list_cmd.setup_parser">
+<code class="descname">setup_parser</code><span class="sig-paren">(</span><em>subparser</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.cli.list_cmd.setup_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-metadb.crawler">
+<span id="metadb-crawler-module"></span><h2>metadb.crawler module<a class="headerlink" href="#module-metadb.crawler" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="metadb.crawler.abspath">
+<code class="descclassname">metadb.crawler.</code><code class="descname">abspath</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.crawler.abspath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.crawler.crawl_recursive">
+<code class="descclassname">metadb.crawler.</code><code class="descname">crawl_recursive</code><span class="sig-paren">(</span><em>session</em>, <em>basedir</em>, <em>collection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.crawler.crawl_recursive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively crawl a directory, creating <a class="reference internal" href="#metadb.model.Path" title="metadb.model.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> s in
+the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> – SQLAlchemy session</li>
+<li><strong>basedir</strong> – Base directory to crawl</li>
+<li><strong>collection</strong> – Collection to put the found paths in</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-metadb.db">
+<span id="metadb-db-module"></span><h2>metadb.db module<a class="headerlink" href="#module-metadb.db" title="Permalink to this headline">¶</a></h2>
+<p>Connect to the database and manage sessions</p>
+<dl class="class">
+<dt id="metadb.db.Session">
+<em class="property">class </em><code class="descclassname">metadb.db.</code><code class="descname">Session</code><a class="headerlink" href="#metadb.db.Session" title="Permalink to this definition">¶</a></dt>
+<dd><p>The database session factory, an instance of
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.orm.session.sessionmaker()</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="metadb.db.connect">
+<code class="descclassname">metadb.db.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>url</em>, <em>debug=False</em>, <em>init=False</em>, <em>session=Session</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.db.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the database and initialise the Session</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – Database URL to connect to (SQLAlchemy style)</li>
+<li><strong>debug</strong> (<em>bool</em>) – Print database logs</li>
+<li><strong>init</strong> (<em>bool</em>) – Initialise the database (requires write permissions)</li>
+<li><strong>session</strong> – SQLAlchemy sessionmaker to bind to the engine</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A connection to the database</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.Connection</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-metadb.io">
+<span id="metadb-io-module"></span><h2>metadb.io module<a class="headerlink" href="#module-metadb.io" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="metadb.io.read_general">
+<code class="descclassname">metadb.io.</code><code class="descname">read_general</code><span class="sig-paren">(</span><em>path</em>, <em>session</em>, <em>collections=set()</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.io.read_general" title="Permalink to this definition">¶</a></dt>
+<dd><p>General purpose metadata reader</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="metadb.io.read_netcdf_attributes">
+<code class="descclassname">metadb.io.</code><code class="descname">read_netcdf_attributes</code><span class="sig-paren">(</span><em>source</em>, <em>session</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.io.read_netcdf_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read attributes from a NetCDF object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="metadb.io.read_netcdf_metadata">
+<code class="descclassname">metadb.io.</code><code class="descname">read_netcdf_metadata</code><span class="sig-paren">(</span><em>path</em>, <em>meta</em>, <em>session</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.io.read_netcdf_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a netCDF file’s metadata into the DB</p>
+<p>No-op if path is not a NetCDF file</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-metadb.model">
+<span id="metadb-model-module"></span><h2>metadb.model module<a class="headerlink" href="#module-metadb.model" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="metadb.model.Attribute">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Attribute</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A generic attribute</p>
+<p>Can be attached to either <a class="reference internal" href="#metadb.model.Metadata" title="metadb.model.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a> or <a class="reference internal" href="#metadb.model.Variable" title="metadb.model.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+<p>Read-only (attributes in the database are de-duplicated)</p>
+<dl class="attribute">
+<dt id="metadb.model.Attribute.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Attribute.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Attribute.key">
+<code class="descname">key</code><a class="headerlink" href="#metadb.model.Attribute.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Attribute.value">
+<code class="descname">value</code><a class="headerlink" href="#metadb.model.Attribute.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute value</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.model.Collection">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Collection</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A collection of files</p>
+<p>A single file can be part of multiple collections</p>
+<dl class="attribute">
+<dt id="metadb.model.Collection.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Collection.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Collection.name">
+<code class="descname">name</code><a class="headerlink" href="#metadb.model.Collection.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collection name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Collection.paths">
+<code class="descname">paths</code><a class="headerlink" href="#metadb.model.Collection.paths" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Path" title="metadb.model.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> s in this collection</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.model.Dimension">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Dimension</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A dimension in a file (c.f. netCDF)</p>
+<dl class="attribute">
+<dt id="metadb.model.Dimension.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Dimension.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Dimension.meta">
+<code class="descname">meta</code><a class="headerlink" href="#metadb.model.Dimension.meta" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Metadata" title="metadb.model.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a> this is part of</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Dimension.meta_id">
+<code class="descname">meta_id</code><a class="headerlink" href="#metadb.model.Dimension.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Dimension.name">
+<code class="descname">name</code><a class="headerlink" href="#metadb.model.Dimension.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Dimension.size">
+<code class="descname">size</code><a class="headerlink" href="#metadb.model.Dimension.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension size</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.model.Metadata">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Metadata</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>Metadata sourced from a file</p>
+<dl class="attribute">
+<dt id="metadb.model.Metadata.attributes">
+<code class="descname">attributes</code><a class="headerlink" href="#metadb.model.Metadata.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Attribute" title="metadb.model.Attribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">Attribute</span></code></a> s of the file (dict)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#metadb.model.Metadata.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Dimension" title="metadb.model.Dimension"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code></a> s in the file (dict)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Metadata.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.mtime">
+<code class="descname">mtime</code><a class="headerlink" href="#metadb.model.Metadata.mtime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.paths">
+<code class="descname">paths</code><a class="headerlink" href="#metadb.model.Metadata.paths" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Path" title="metadb.model.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> s to the file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.sha256">
+<code class="descname">sha256</code><a class="headerlink" href="#metadb.model.Metadata.sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>sha256 checksum</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.size">
+<code class="descname">size</code><a class="headerlink" href="#metadb.model.Metadata.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.size_str">
+<code class="descname">size_str</code><a class="headerlink" href="#metadb.model.Metadata.size_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Metadata.variables">
+<code class="descname">variables</code><a class="headerlink" href="#metadb.model.Metadata.variables" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Variable" title="metadb.model.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> s in the file (dict)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.model.Path">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Path</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>Filesystem path</p>
+<p>The same path can point to the same file contents (e.g. from symlinks)</p>
+<dl class="attribute">
+<dt id="metadb.model.Path.basename">
+<code class="descname">basename</code><a class="headerlink" href="#metadb.model.Path.basename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The basename of the path</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.collections">
+<code class="descname">collections</code><a class="headerlink" href="#metadb.model.Path.collections" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Collection" title="metadb.model.Collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code></a> s that the path is part of</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.gid">
+<code class="descname">gid</code><a class="headerlink" href="#metadb.model.Path.gid" title="Permalink to this definition">¶</a></dt>
+<dd><p>int os.stat() gid</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Path.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.last_seen">
+<code class="descname">last_seen</code><a class="headerlink" href="#metadb.model.Path.last_seen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unix time when the path was last seen</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.meta">
+<code class="descname">meta</code><a class="headerlink" href="#metadb.model.Path.meta" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Metadata" title="metadb.model.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a> of the path’s content</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.meta_id">
+<code class="descname">meta_id</code><a class="headerlink" href="#metadb.model.Path.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.mtime">
+<code class="descname">mtime</code><a class="headerlink" href="#metadb.model.Path.mtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>int os.stat() mtime</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.path">
+<code class="descname">path</code><a class="headerlink" href="#metadb.model.Path.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>str Filesystem path</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.size">
+<code class="descname">size</code><a class="headerlink" href="#metadb.model.Path.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>int os.stat() size</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Path.uid">
+<code class="descname">uid</code><a class="headerlink" href="#metadb.model.Path.uid" title="Permalink to this definition">¶</a></dt>
+<dd><p>int os.stat() uid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metadb.model.Path.update_stat">
+<code class="descname">update_stat</code><span class="sig-paren">(</span><em>stat</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Path.update_stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the path’s stat data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>stat</strong> – Stat values to use in the update</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metadb.model.Variable">
+<em class="property">class </em><code class="descclassname">metadb.model.</code><code class="descname">Variable</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.model.Variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A variable in a file (c.f. netCDF)</p>
+<dl class="attribute">
+<dt id="metadb.model.Variable.attributes">
+<code class="descname">attributes</code><a class="headerlink" href="#metadb.model.Variable.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Attribute" title="metadb.model.Attribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">Attribute</span></code></a> s of this variable (dict)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#metadb.model.Variable.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Dimension" title="metadb.model.Dimension"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dimension</span></code></a> s of this variable</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.id">
+<code class="descname">id</code><a class="headerlink" href="#metadb.model.Variable.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.meta">
+<code class="descname">meta</code><a class="headerlink" href="#metadb.model.Variable.meta" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#metadb.model.Metadata" title="metadb.model.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code></a> this is part of</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.meta_id">
+<code class="descname">meta_id</code><a class="headerlink" href="#metadb.model.Variable.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.name">
+<code class="descname">name</code><a class="headerlink" href="#metadb.model.Variable.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variable name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.model.Variable.type">
+<code class="descname">type</code><a class="headerlink" href="#metadb.model.Variable.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variable type</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-metadb.query">
+<span id="metadb-query-module"></span><h2>metadb.query module<a class="headerlink" href="#module-metadb.query" title="Permalink to this headline">¶</a></h2>
+<p>Database queries</p>
+<dl class="function">
+<dt id="metadb.query.find_or_create">
+<code class="descclassname">metadb.query.</code><code class="descname">find_or_create</code><span class="sig-paren">(</span><em>session</em>, <em>klass</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.query.find_or_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return either an existing klass object that matches kwargs, or create a new
+one</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="metadb.query.search_metadata">
+<code class="descclassname">metadb.query.</code><code class="descname">search_metadata</code><span class="sig-paren">(</span><em>session</em>, <em>variables=[]</em>, <em>file_attributes=[]</em>, <em>variable_attributes=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.query.search_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-metadb.util">
+<span id="metadb-util-module"></span><h2>metadb.util module<a class="headerlink" href="#module-metadb.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="metadb.util.size_str">
+<code class="descclassname">metadb.util.</code><code class="descname">size_str</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.util.size_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-metadb.web">
+<span id="metadb-web-module"></span><h2>metadb.web module<a class="headerlink" href="#module-metadb.web" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="metadb.web.DefaultConfig">
+<em class="property">class </em><code class="descclassname">metadb.web.</code><code class="descname">DefaultConfig</code><a class="headerlink" href="#metadb.web.DefaultConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="metadb.web.DefaultConfig.DB">
+<code class="descname">DB</code><em class="property"> = 'sqlite:////home/unimelb.edu.au/swales/metadb.db'</em><a class="headerlink" href="#metadb.web.DefaultConfig.DB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.web.DefaultConfig.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = False</em><a class="headerlink" href="#metadb.web.DefaultConfig.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="metadb.web.DefaultConfig.TESTING">
+<code class="descname">TESTING</code><em class="property"> = False</em><a class="headerlink" href="#metadb.web.DefaultConfig.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.get_db">
+<code class="descclassname">metadb.web.</code><code class="descname">get_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.get_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.hello">
+<code class="descclassname">metadb.web.</code><code class="descname">hello</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.hello" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.list_collections">
+<code class="descclassname">metadb.web.</code><code class="descname">list_collections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.list_collections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.show_collection">
+<code class="descclassname">metadb.web.</code><code class="descname">show_collection</code><span class="sig-paren">(</span><em>collection</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.show_collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.show_path">
+<code class="descclassname">metadb.web.</code><code class="descname">show_path</code><span class="sig-paren">(</span><em>path_id</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.show_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="metadb.web.shutdown_session">
+<code class="descclassname">metadb.web.</code><code class="descname">shutdown_session</code><span class="sig-paren">(</span><em>exception=None</em><span class="sig-paren">)</span><a class="headerlink" href="#metadb.web.shutdown_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-metadb">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-metadb" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">metadb package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-metadb.cli">metadb.cli module</a></li>
+<li><a class="reference internal" href="#module-metadb.crawler">metadb.crawler module</a></li>
+<li><a class="reference internal" href="#module-metadb.db">metadb.db module</a></li>
+<li><a class="reference internal" href="#module-metadb.io">metadb.io module</a></li>
+<li><a class="reference internal" href="#module-metadb.model">metadb.model module</a></li>
+<li><a class="reference internal" href="#module-metadb.query">metadb.query module</a></li>
+<li><a class="reference internal" href="#module-metadb.util">metadb.util module</a></li>
+<li><a class="reference internal" href="#module-metadb.web">metadb.web module</a></li>
+<li><a class="reference internal" href="#module-metadb">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">metadb</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">metadb</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/metadb.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Scott Wales.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/metadb.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
