@@ -26,7 +26,7 @@ Connect to the database and manage sessions
 """
 
 from __future__ import print_function
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
 Session = sessionmaker()
@@ -46,10 +46,23 @@ def connect(url, debug=False, init=False, session=Session):
     """
     engine = create_engine(url, echo=debug)
 
+    if engine.dialect.name == 'sqlite':
+        # Enable transactions
+        @event.listens_for(engine, "connect")
+        def do_connect(dbapi_connection, connection_record):
+            # disable pysqlite's emitting of the BEGIN statement entirely.
+            # also stops it from emitting COMMIT before any DDL.
+            dbapi_connection.isolation_level = None
+
+        @event.listens_for(engine, "begin")
+        def do_begin(conn):
+            # emit our own BEGIN
+            conn.execute("BEGIN")
+
     if init:
         from .model import Base
         Base.metadata.create_all(engine)
 
     session.configure(bind=engine)
 
-    return engine.connect()
+    return engine

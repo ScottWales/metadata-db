@@ -21,21 +21,24 @@ import metadb.db as db
 import pytest
 import os
 import logging
+from sqlalchemy import event
 
 
 @pytest.fixture(scope='session')
 def database():
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    conn = db.connect(os.environ.get(
+    engine = db.connect(os.environ.get(
         'TEST_DATABASE', 'sqlite:///:memory:'), init=True)
-    yield conn
-    conn.close()
+
+    yield engine
 
 
 @pytest.fixture
 def session(database):
-    trans = database.begin()
-    session = db.Session(bind=database)
+    conn = database.connect()
+    trans = conn.begin()
+    session = db.Session(bind=conn)
     yield session
     session.close()
     trans.rollback()
+    conn.close()

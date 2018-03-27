@@ -29,12 +29,20 @@ def test_collection(session):
     c = Collection(name='c')
     p = Path(collections=set((c,)))
     session.add(p)
+    session.commit()
 
     q = (session.query(Path)
                 .join(Path.collections)
                 .filter(Collection.name == 'c')
                 .one())
     assert q == p
+
+def test_collection_repeat(session):
+    c = Collection(name='c')
+    p = Path(collections=set((c,)))
+    session.add(p)
+
+    session.query(Path).one()
 
 
 def test_path(session):
@@ -57,23 +65,23 @@ def test_path(session):
     assert p1.path == '/foo/bar/baz'
 
 
-def test_path_property(database, session):
-    import metadb.model
-    a = Path(basename='a')
-    session.add(a)
-    session.commit()
-
-    q = metadb.model._path_path_property(a)
-    r = database.execute(q).fetchall()
-    assert r == [('a',)]
-
-    b = Path(basename='b', parent=a)
-    session.add(b)
-    session.commit()
-
-    q = metadb.model._path_path_property(b)
-    r = database.execute(q).fetchall()
-    assert r == [('a/b',)]
+#def test_path_property(database, session):
+#    import metadb.model
+#    a = Path(basename='a')
+#    session.add(a)
+#    session.commit()
+#
+#    q = metadb.model._path_path_property(a)
+#    r = database.execute(q).fetchall()
+#    assert r == [('a',)]
+#
+#    b = Path(basename='b', parent=a)
+#    session.add(b)
+#    session.commit()
+#
+#    q = metadb.model._path_path_property(b)
+#    r = database.execute(q).fetchall()
+#    assert r == [('a/b',)]
 
 
 def test_path_closure(session):
