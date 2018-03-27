@@ -16,6 +16,7 @@ setup(
 
     install_requires=[
         'sqlalchemy',
+        'psycopg2',
         'netcdf4',
         'flask',
         'pandas',
@@ -23,7 +24,6 @@ setup(
         'scandir;python_version<"3"',
     ],
     extras_require={
-        'postgres': ['psycopg2'],
         'test': ['pytest'],
     },
     entry_points={
