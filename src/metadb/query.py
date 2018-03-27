@@ -85,7 +85,7 @@ def find_path(session, path):
         else:
             prefix = '/'.join((prefix, c))
 
-        print("prefix >%s<"%prefix)
+        print("prefix >%s<" % prefix)
 
         # Check if this prefix matches an existing path
         p = session.query(Path).filter(Path.basename == prefix).one_or_none()
@@ -108,16 +108,16 @@ def find_path_from_parent(session, parent, path):
     assert path.startswith(parent.basename)
 
     remaining = path[len(parent.basename):]
-    components = remaining.split('/')[1:] # (exclude the first '/')
+    components = remaining.split('/')[1:]  # (exclude the first '/')
 
     match = parent
     for c in components:
         # Does a child of 'match' match the next component?
         print(c)
         match = (session
-                .query(Path)
-                .filter_by(parent = match, basename = c)
-                .one_or_none())
+                 .query(Path)
+                 .filter_by(parent=match, basename=c)
+                 .one_or_none())
 
         if match is None:
             # No match found

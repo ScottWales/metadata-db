@@ -58,7 +58,6 @@ def read_general(basename, session, parent=None, collections=set()):
         meta = Metadata(mtime=mtime, size=size)
         path.meta = meta
 
-
     read_netcdf_metadata(path.path, path.meta, session)
 
 

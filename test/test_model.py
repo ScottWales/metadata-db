@@ -37,6 +37,7 @@ def test_collection(session):
                 .one())
     assert q == p
 
+
 def test_collection_repeat(session):
     c = Collection(name='c')
     p = Path(collections=set((c,)))
@@ -61,7 +62,7 @@ def test_path(session):
     p1 = Path(basename='baz', parent=p)
     session.add(p1)
     session.commit()
-    
+
     assert p1.path == '/foo/bar/baz'
 
 
@@ -129,12 +130,11 @@ def test_cte(session):
 
     r = q.all()
 
-    assert (a.id,a.id,0) in r
-    assert (b.id,b.id,0) in r
-    assert (c.id,c.id,0) in r
+    assert (a.id, a.id, 0) in r
+    assert (b.id, b.id, 0) in r
+    assert (c.id, c.id, 0) in r
 
-    assert (b.id,a.id,1) in r
+    assert (b.id, a.id, 1) in r
 
-    assert (c.id,b.id,1) in r
-    assert (c.id,a.id,2) in r
-
+    assert (c.id, b.id, 1) in r
+    assert (c.id, a.id, 2) in r

@@ -21,7 +21,7 @@ from metadb.model import Collection, Path
 def test_crawler_updates(session, tmpdir):
     c = Collection(name='c')
     session.add(c)
-    p = Path(basename = str(tmpdir))
+    p = Path(basename=str(tmpdir))
     session.add(p)
 
     # Create a test file and crawl the directory
@@ -60,7 +60,7 @@ def test_crawler_updates(session, tmpdir):
 def test_crawler_recursive(session, tmpdir):
     col = Collection(name='c')
     session.add(col)
-    p = Path(basename = str(tmpdir))
+    p = Path(basename=str(tmpdir))
     session.add(p)
 
     a = tmpdir.mkdir('a')
@@ -75,7 +75,7 @@ def test_crawler_recursive(session, tmpdir):
 def test_crawler_errors(session, tmpdir):
     col = Collection(name='c')
     session.add(col)
-    p = Path(basename = str(tmpdir))
+    p = Path(basename=str(tmpdir))
     session.add(p)
 
     a = tmpdir.mkdir('a')

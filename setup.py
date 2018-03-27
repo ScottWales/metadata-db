@@ -12,7 +12,7 @@ setup(
 
     package_data={
         'metadb': ['templates/*.html'],
-        },
+    },
 
     install_requires=[
         'sqlalchemy',
