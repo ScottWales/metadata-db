@@ -12,13 +12,13 @@ run_pytest: &run_pytest
             command: |
                 source venv/bin/activate
                 mkdir -p test-report/pytest
-                py.test --junitxml=test-report/pytest/sqlite.xml
+                py.test --junit-xml=test-report/pytest/sqlite.xml --junit-prefix='sqlite'
         - run:
             name: test-postgres
             command: |
                 source venv/bin/activate
                 mkdir -p test-report/pytest
-                py.test --junitxml=test-report/pytest/postgres.xml
+                py.test --junit-xml=test-report/pytest/postgres.xml --junit-prefix='postgres'
             environment:
                 TEST_DATABASE: 'postgresql://root@localhost/circle_test'
         - store_test_results:
