@@ -24,16 +24,27 @@ run_conda: &run_conda
     steps:
         - checkout
         - run:
-            name: setup
+            name: install-conda
             command: |
                 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O conda.sh
                 bash conda.sh -b -p ~/miniconda
+        - restore_cache:
+            keys:
+                - conda-pkgs-{{ checksum "conda/meta.yaml" }}
+                - conda-pkgs
+        - run:
+            name: setup
+            command: |
                 ~/miniconda/bin/conda install --yes conda-build anaconda-client
                 ~/miniconda/bin/conda config --system --add channels conda-forge
         - run:
             name: build
             command: |
                 ~/miniconda/bin/conda build conda/
+        - save_cache:
+            key: conda-pkgs-{{ checksum "conda/meta.yaml" }}
+            paths:
+                ~/miniconda/pkgs
 
 
 version: 2
