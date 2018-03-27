@@ -20,12 +20,14 @@ from __future__ import print_function
 import metadb.db as db
 import pytest
 import os
+import logging
 
 
 @pytest.fixture(scope='session')
 def database():
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     conn = db.connect(os.environ.get(
-        'TEST_DATABASE', 'sqlite:///:memory:'), debug=True, init=True)
+        'TEST_DATABASE', 'sqlite:///:memory:'), init=True)
     yield conn
     conn.close()
 
