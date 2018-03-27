@@ -65,8 +65,11 @@ def test_path(session):
     assert p1.path == '/foo/bar/baz'
 
 
-#def test_path_property(database, session):
-#    import metadb.model
+# def test_path_property(database, session):
+#     import metadb.model
+#     import sqlparse
+#     print(sqlparse.format(str(metadb.model._path_path_property(Path)),reindent=True))
+#     assert False
 #    a = Path(basename='a')
 #    session.add(a)
 #    session.commit()
