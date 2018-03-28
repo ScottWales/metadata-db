@@ -92,7 +92,7 @@ jobs:
             - run:
                 name: coverage-report
                 command: |
-                    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -O cc-test-reporter
+                    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter
                     chmod +x cc-test-reporter
                     ./cc-test-reporter sum-coverage --parts 2 workspace/coverage.*.json -o coverage.json
                     ./cc-test-reporter upload-coverage --input coverage.json
