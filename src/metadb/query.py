@@ -80,7 +80,7 @@ def find_path(session, path):
 
     # Find the base path
     for c in components:
-        if prefix == None:
+        if prefix is None:
             prefix = c
         else:
             prefix = '/'.join((prefix, c))

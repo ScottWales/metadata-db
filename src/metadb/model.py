@@ -280,13 +280,14 @@ def _make_path_closure():
 
 path_closure = _make_path_closure()
 
-Path.path_components = relationship(Path,
-                                    secondary=path_closure,
-                                    primaryjoin=Path.id == path_closure.c.child_id,
-                                    secondaryjoin=Path.id == path_closure.c.parent_id,
-                                    order_by=path_closure.c.depth.desc(),
-                                    viewonly=True,
-                                    )
+Path.path_components = \
+    relationship(Path,
+                 secondary=path_closure,
+                 primaryjoin=Path.id == path_closure.c.child_id,
+                 secondaryjoin=Path.id == path_closure.c.parent_id,
+                 order_by=path_closure.c.depth.desc(),
+                 viewonly=True,
+                 )
 
 
 class string_agg(FunctionElement):
@@ -308,12 +309,12 @@ def _path_path_property(path):
 
     sub = (select([path_closure.c.child_id, parent.c.basename])
            .select_from(parent
-                        .join(path_closure, parent.c.id == path_closure.c.parent_id))
+                        .join(path_closure,
+                              parent.c.id == path_closure.c.parent_id))
            .order_by(path_closure.c.depth.desc())
            .alias('foo'))
 
     q = (select([string_agg(sub.c.basename, '/')])
-         #.select_from(sub)
          .group_by(sub.c.child_id)
          .where(sub.c.child_id == path.id))
 
