@@ -104,7 +104,7 @@ workflows:
             - python2
             - python3
             - conda3
-            - coverage-report
+            - coverage-report:
                 requires:
                     - python2
                     - python3
