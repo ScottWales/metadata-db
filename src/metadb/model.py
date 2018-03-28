@@ -49,6 +49,8 @@ path_to_collection = Table('path_to_collection', Base.metadata,
                            Column('coll_id', Integer,
                                   ForeignKey('collection.id')),
                            )
+# Currently calculated by a CRE, may change to a materialised view at some point
+#
 # path_closure = Table('path_closure', Base.metadata,
 #                     Column('child_id', Integer, ForeignKey('path.id')),
 #                     Column('parent_id', Integer, ForeignKey('path.id')),
