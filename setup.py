@@ -24,7 +24,10 @@ setup(
         'scandir;python_version<"3"',
     ],
     extras_require={
-        'test': ['pytest'],
+        'test': [
+            'pytest',
+            'pytest-cov',
+            ],
     },
     entry_points={
         'console_scripts': [
