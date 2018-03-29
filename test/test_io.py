@@ -20,14 +20,14 @@ from metadb.model import *
 
 
 def test_read_general(session):
-    read_general(path='foo', session=session)
+    read_general(basename='foo', parent=None, session=session)
     p1 = session.query(Path).one()
     m = session.query(Metadata).one()
     assert p1.path == 'foo'
     assert p1.meta == m
 
     # Identical paths should not create a new object
-    read_general(path='foo', session=session)
+    read_general(basename='foo', parent=None, session=session)
     p2 = session.query(Path).one()
     assert p1 == p2
 
@@ -53,7 +53,7 @@ def test_read_netcdf_metadata(session):
 
 
 def test_read_general_netcdf(session):
-    read_general(test_data, session=session)
+    read_general(test_data, parent=None, session=session)
 
     p = session.query(Path).one()
     assert p.path == test_data

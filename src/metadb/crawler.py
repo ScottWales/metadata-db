@@ -15,7 +15,7 @@
 # limitations under the License.
 from __future__ import print_function
 from .model import Path
-from .query import find_or_create
+from .query import find_or_create, find_path
 import os
 
 """
@@ -42,7 +42,7 @@ def abspath(path):
         return os.path.abspath(str(path))
 
 
-def crawl_recursive(session, basedir, collection=None):
+def crawl_recursive(session, basedir, collection=None, parent=None):
     """
     Recursively crawl a directory, creating :py:class:`~metadb.model.Path` s in
     the database
@@ -53,15 +53,19 @@ def crawl_recursive(session, basedir, collection=None):
     """
     basedir = abspath(basedir)
 
+    if parent is None:
+        parent = find_path(session, basedir)
+        assert parent is not None
+
     for entry in scandir(basedir):
         print(entry.path)
-        p = find_or_create(session, Path, path=entry.path)
+        p = find_or_create(session, Path, basename=entry.name, parent=parent)
         p.collections.add(collection)
 
         try:
             p.update_stat(entry.stat())
             if entry.is_dir() and not entry.is_symlink():
-                crawl_recursive(session, entry.path, collection)
+                crawl_recursive(session, entry.path, collection, parent)
         except PermissionError:
             # Not readable
             pass

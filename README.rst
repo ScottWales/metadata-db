@@ -1,9 +1,6 @@
 metadata-db
 ===========
 
-.. image:: https://img.shields.io/travis/ScottWales/metadata-db.svg
-   :target: https://travis-ci.org/ScottWales/metadata-db
-   :alt: Travis CI Status
 .. image:: https://img.shields.io/circleci/project/github/ScottWales/metadata-db.svg
    :target: https://circleci.com/gh/ScottWales/metadata-db
    :alt: Circle CI status

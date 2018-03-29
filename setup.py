@@ -12,10 +12,11 @@ setup(
 
     package_data={
         'metadb': ['templates/*.html'],
-        },
+    },
 
     install_requires=[
         'sqlalchemy',
+        'psycopg2',
         'netcdf4',
         'flask',
         'pandas',
@@ -23,8 +24,10 @@ setup(
         'scandir;python_version<"3"',
     ],
     extras_require={
-        'postgres': ['psycopg2'],
-        'test': ['pytest'],
+        'test': [
+            'pytest',
+            'pytest-cov',
+            ],
     },
     entry_points={
         'console_scripts': [

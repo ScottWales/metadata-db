@@ -18,9 +18,13 @@ from __future__ import print_function
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text, Float
 from sqlalchemy import ForeignKey, Table, UniqueConstraint, text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, aliased, column_property
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
+from sqlalchemy import select, func, alias
+from sqlalchemy.sql.expression import literal, FunctionElement
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.compiler import compiles
 import os
 import time
 
@@ -45,6 +49,13 @@ path_to_collection = Table('path_to_collection', Base.metadata,
                            Column('coll_id', Integer,
                                   ForeignKey('collection.id')),
                            )
+# Currently calculated by a CRE, may change to a materialised view at some point
+#
+# path_closure = Table('path_closure', Base.metadata,
+#                     Column('child_id', Integer, ForeignKey('path.id')),
+#                     Column('parent_id', Integer, ForeignKey('path.id')),
+#                     Column('depth', Integer),
+#                     )
 
 
 class Collection(Base):
@@ -76,9 +87,12 @@ class Path(Base):
 
     id = Column(Integer, primary_key=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
+    parent_id = Column(Integer, ForeignKey('path.id'))
 
-    #: str Filesystem path
-    path = Column(Text, unique=True)
+    # #: str Filesystem path
+    # path = Column(Text, unique=True)
+    #: str Path basename
+    basename = Column(Text)
 
     #: int os.stat() mtime
     mtime = Column(Integer)
@@ -98,12 +112,14 @@ class Path(Base):
                                collection_class=set,
                                back_populates='paths')
 
-    @property
-    def basename(self):
+    parent = relationship('Path', remote_side=[id], uselist=False)
+
+    @hybrid_property
+    def path(self):
         """
-        The basename of the path
+        Full path to the file
         """
-        return os.path.basename(self.path)
+        return '/'.join([c.basename for c in self.path_components])
 
     def update_stat(self, stat):
         """
@@ -233,3 +249,78 @@ class Variable(Base):
                               collection_class=OrderingList(
                                   'var_to_dim.c.ndim'),
                               )
+
+
+def _make_path_closure():
+    """
+    Helper function to construct the path closure CTE
+    """
+    from sqlalchemy.orm import aliased
+
+    recursive = (select([
+        Path.id.label("child_id"),
+        Path.id.label("parent_id"),
+        literal(0).label('depth'),
+    ])
+        .cte(name='closure', recursive=True)
+    )
+
+    path_alias = aliased(Path)
+    r_alias = aliased(recursive, 'r')
+
+    recursive = recursive.union_all(
+        select([
+            path_alias.id.label('child_id'),
+            r_alias.c.parent_id,
+            (r_alias.c.depth + 1).label('depth'),
+        ])
+        .where(path_alias.parent_id == r_alias.c.child_id)
+    )
+
+    return recursive.alias(name='path_closure')
+
+
+path_closure = _make_path_closure()
+
+Path.path_components = \
+    relationship(Path,
+                 secondary=path_closure,
+                 primaryjoin=Path.id == path_closure.c.child_id,
+                 secondaryjoin=Path.id == path_closure.c.parent_id,
+                 order_by=path_closure.c.depth.desc(),
+                 viewonly=True,
+                 )
+
+
+class string_agg(FunctionElement):
+    name = 'string_agg'
+
+
+@compiles(string_agg, 'sqlite')
+def compile(element, compiler, **kw):
+    return 'group_concat(%s)' % compiler.process(element.clauses)
+
+
+@compiles(string_agg, 'postgresql')
+def compile(element, compiler, **kw):
+    return 'string_agg(%s)' % compiler.process(element.clauses)
+
+
+def _path_path_property(path):
+    parent = Path.__table__.alias(name='parent')
+
+    sub = (select([path_closure.c.child_id, parent.c.basename])
+           .select_from(parent
+                        .join(path_closure,
+                              parent.c.id == path_closure.c.parent_id))
+           .order_by(path_closure.c.depth.desc())
+           .alias('foo'))
+
+    q = (select([string_agg(sub.c.basename, '/')])
+         .group_by(sub.c.child_id)
+         .where(sub.c.child_id == path.id))
+
+    return q
+
+
+Path.path = column_property(_path_path_property(Path), deferred=True)

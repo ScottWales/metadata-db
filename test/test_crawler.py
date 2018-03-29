@@ -21,6 +21,8 @@ from metadb.model import Collection, Path
 def test_crawler_updates(session, tmpdir):
     c = Collection(name='c')
     session.add(c)
+    p = Path(basename=str(tmpdir))
+    session.add(p)
 
     # Create a test file and crawl the directory
     a = tmpdir.join('a')
@@ -33,16 +35,16 @@ def test_crawler_updates(session, tmpdir):
     assert c in p.collections
     last_seen = p.last_seen
 
-    # There should be one path
-    assert session.query(Path).count() == 1
+    # There should be two paths
+    assert session.query(Path).count() == 2
 
     # Create a new file
     b = tmpdir.join('b')
     b.write('hello')
     crawl_recursive(session, str(tmpdir), collection=c)
 
-    # There should now be two paths present
-    assert session.query(Path).count() == 2
+    # There should now be three paths present
+    assert session.query(Path).count() == 3
 
     # Update an existing file
     a.write('goodbye')
@@ -58,6 +60,8 @@ def test_crawler_updates(session, tmpdir):
 def test_crawler_recursive(session, tmpdir):
     col = Collection(name='c')
     session.add(col)
+    p = Path(basename=str(tmpdir))
+    session.add(p)
 
     a = tmpdir.mkdir('a')
     b = a.join('b')
@@ -65,12 +69,14 @@ def test_crawler_recursive(session, tmpdir):
     b.write('hello')
 
     crawl_recursive(session, str(tmpdir), collection=col)
-    assert session.query(Path).count() == 3
+    assert session.query(Path).count() == 4
 
 
 def test_crawler_errors(session, tmpdir):
     col = Collection(name='c')
     session.add(col)
+    p = Path(basename=str(tmpdir))
+    session.add(p)
 
     a = tmpdir.mkdir('a')
 

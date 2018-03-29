@@ -226,7 +226,7 @@ class collection_report_cmd(object):
                            Path.uid,
                            func.sum(Path.size).label('size'))
              .join(Collection.paths)
-             .filter(Path.uid != None)
+             .filter(Path.uid.isnot(None))
              .group_by(Collection.name, Path.uid)
              )
 
