@@ -11,7 +11,10 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
 
     package_data={
-        'metadb': ['templates/*.html', 'migrations/*', 'migrations/versions/*'],
+        'metadb': [
+            'templates/*.html',
+            'migrations/*',
+            'migrations/versions/*'],
     },
 
     install_requires=[
