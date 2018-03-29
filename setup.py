@@ -22,6 +22,7 @@ setup(
         'pandas',
         'mock;python_version<"3"',
         'scandir;python_version<"3"',
+        'alembic',
     ],
     extras_require={
         'test': [
