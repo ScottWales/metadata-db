@@ -17,7 +17,7 @@ from __future__ import print_function
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text, Float
-from sqlalchemy import ForeignKey, Table, UniqueConstraint, text
+from sqlalchemy import ForeignKey, Table, UniqueConstraint, text, Index
 from sqlalchemy.orm import relationship, aliased, column_property
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
@@ -97,7 +97,7 @@ class Path(Base):
     """
     __tablename__ = 'path'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
     meta_id = Column(Integer, ForeignKey('metadata.id'))
     parent_id = Column(Integer, ForeignKey('path.id'))
 
@@ -125,6 +125,8 @@ class Path(Base):
                                back_populates='paths')
 
     parent = relationship('Path', remote_side=[id], uselist=False)
+    
+    __table_args__ = (Index('parent_basename_idx', parent_id, basename),)
 
     @hybrid_property
     def path(self):
