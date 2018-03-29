@@ -26,8 +26,13 @@ Connect to the database and manage sessions
 """
 
 from __future__ import print_function
+import sqlalchemy
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
+from .model import Base
+from alembic.config import Config
+from alembic.script import ScriptDirectory
+from alembic.environment import EnvironmentContext
 
 Session = sessionmaker()
 
@@ -60,9 +65,32 @@ def connect(url, debug=False, init=False, session=Session):
             conn.execute("BEGIN")
 
     if init:
-        from .model import Base
-        Base.metadata.create_all(engine)
+        try:
+            apply_migrations(engine)
+        except sqlalchemy.exc.OperationalError:
+            raise IOError("Database version incompatible")
 
     session.configure(bind=engine)
 
     return engine
+
+
+def apply_migrations(engine):
+    """
+    Apply Alembic migrations to the connected database
+    """
+    target = 'head'
+
+    config = Config()
+    config.set_main_option("script_location", "metadb:migrations")
+    script = ScriptDirectory.from_config(config)
+
+    def upgrade_fn(rev, context):
+        return script._upgrade_revs(target, rev)
+
+    with EnvironmentContext(config, script) as env:
+        with engine.connect() as conn:
+            env.configure(conn, fn=upgrade_fn, destination_rev=target)
+
+            with env.begin_transaction():
+                env.run_migrations()

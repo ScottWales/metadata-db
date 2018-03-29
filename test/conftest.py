@@ -27,8 +27,9 @@ from sqlalchemy import event
 @pytest.fixture(scope='session')
 def database():
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    engine = db.connect(os.environ.get(
-        'TEST_DATABASE', 'sqlite:///:memory:'), init=True)
+    engine = db.connect(os.environ.get('TEST_DATABASE', 'sqlite:///:memory:'))
+
+    db.apply_migrations(engine)
 
     yield engine
 

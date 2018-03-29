@@ -11,7 +11,10 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
 
     package_data={
-        'metadb': ['templates/*.html'],
+        'metadb': [
+            'templates/*.html',
+            'migrations/*',
+            'migrations/versions/*'],
     },
 
     install_requires=[
@@ -22,6 +25,7 @@ setup(
         'pandas',
         'mock;python_version<"3"',
         'scandir;python_version<"3"',
+        'alembic',
     ],
     extras_require={
         'test': [

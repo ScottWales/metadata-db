@@ -27,3 +27,13 @@ Start a test webserver
 ::
 
     FLASK_APP=meta.web FLASK_DEBUG=1 flask run
+
+Create a database migration
+===========================
+
+If the database has been changed create a migration file, these will be
+automatically applied to the database upon connecting
+
+::
+
+    alembic revision --autogenerate -m "Change message"
