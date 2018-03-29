@@ -230,8 +230,8 @@ class crawl_cmd(object):
             crawl_single_c(c)
         else:
             q = (session
-                    .query(model.Collection)
-                    .order_by(func.coalesce(model.Collection.last_crawled, -1.0)))
+                 .query(model.Collection)
+                 .order_by(func.coalesce(model.Collection.last_crawled, -1.0)))
 
             for c in q:
                 crawl_single_c(c)
