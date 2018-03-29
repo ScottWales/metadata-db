@@ -26,6 +26,7 @@ Connect to the database and manage sessions
 """
 
 from __future__ import print_function
+import sqlalchemy
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from .model import Base
@@ -64,7 +65,10 @@ def connect(url, debug=False, init=False, session=Session):
             conn.execute("BEGIN")
 
     if init:
-        apply_migrations(engine)
+        try:
+            apply_migrations(engine)
+        except sqlalchemy.exc.OperationalError:
+            raise IOError("Database version incompatible")
 
     session.configure(bind=engine)
 
