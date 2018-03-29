@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import print_function
-from .model import Path
+from .model import Path, path_to_collection
 from .query import find_or_create, find_path
 import os
 import six
 import time
+from sqlalchemy.sql.expression import select, literal
 
 """
 Filesystem crawler
@@ -126,6 +127,10 @@ def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
         if entry.is_dir(follow_symlinks=False):
             new_parent = children[entry.name]
             crawl_recursive_impl(session, entry.path, collection, new_parent, last_seen)
+
+    session.commit()
+    child_coll = select([literal(collection.id).label('coll'), Path.id.label('path')]).where(Path.parent_id == parent.id)
+    session.execute(path_to_collection.insert().from_select(['coll_id', 'path_id'], child_coll))
 
     print(basedir)
 
