@@ -74,6 +74,7 @@ def connect(url, debug=False, init=False, session=Session):
 
     return engine
 
+
 def apply_migrations(engine):
     """
     Apply Alembic migrations to the connected database
@@ -93,4 +94,3 @@ def apply_migrations(engine):
 
             with env.begin_transaction():
                 env.run_migrations()
-

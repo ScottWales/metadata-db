@@ -125,7 +125,7 @@ class Path(Base):
                                back_populates='paths')
 
     parent = relationship('Path', remote_side=[id], uselist=False)
-    
+
     __table_args__ = (Index('parent_basename_idx', parent_id, basename),)
 
     @hybrid_property
