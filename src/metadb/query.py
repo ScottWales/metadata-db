@@ -85,8 +85,6 @@ def find_path(session, path):
         else:
             prefix = '/'.join((prefix, c))
 
-        print("prefix >%s<" % prefix)
-
         # Check if this prefix matches an existing path
         p = session.query(Path).filter(Path.basename == prefix).one_or_none()
         if p is not None:

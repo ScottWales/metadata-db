@@ -48,7 +48,7 @@ def cli(argv=sys.argv[1:], session=None):
 
     import_cmd().setup_parser(subparser)
     list_cmd().setup_parser(subparser)
-    collection_cmd().setup_parser(subparser)
+    collection_create_cmd().setup_parser(subparser)
     collection_report_cmd().setup_parser(subparser)
     crawl_cmd().setup_parser(subparser)
 
@@ -62,25 +62,49 @@ def cli(argv=sys.argv[1:], session=None):
     session.commit()
 
 
-class collection_cmd(object):
+class collection_group(object):
+    """
+    Collection related commands
+    """
+
+    def setup_parser(self, subparser):
+        parser = subparser.add_parser('collection',
+                                      help="Collection commands",
+                                      description=getdoc(self))
+
+        subparser = parser.add_subparsers(help="Command")
+
+
+class collection_create_cmd(object):
     """
     Create a new collection
     """
 
     def setup_parser(self, subparser):
-        parser = subparser.add_parser('collection',
+        parser = subparser.add_parser('create',
                                       help="Create a collection",
                                       description=getdoc(self))
 
-        parser.add_argument('--name',
+        parser.add_argument('--collection', '-c',
                             help="Collection name",
+                            )
+        parser.add_argument('root',
+                            nargs='*',
+                            help="Collection root path",
                             )
 
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        c = query.find_or_create(session, model.Collection, name=args.name)
+        c = query.find_or_create(
+            session, model.Collection, name=args.collection)
         session.add(c)
+
+        paths = [query.find_or_create(session,
+                                      model.Path,
+                                      basename=os.path.abspath(r))
+                 for r in args.root]
+        c.root_paths.update(paths)
 
 
 class import_cmd(object):
@@ -183,23 +207,29 @@ class crawl_cmd(object):
                                       description=getdoc(self))
 
         parser.add_argument(
-            'root',
-            help='Root path'
-        )
-
-        parser.add_argument(
             '--collection',
-            help='Collection name'
+            help='Collection name',
         )
 
         parser.set_defaults(command=self)
 
     def __call__(self, args, session):
-        c = (session.query(model.Collection)
-             .filter(model.Collection.name == args.collection)
-             .one())
 
-        crawler.crawl_recursive(session, args.root, collection=c)
+        def crawl_single_c(c):
+            for r in c.root_paths:
+                crawler.crawl_recursive(session, r.path, collection=c)
+
+        if args.collection is not None:
+            c = (session.query(model.Collection)
+                 .filter(model.Collection.name == args.collection)
+                 .one())
+
+            crawl_single_c(c)
+        else:
+            q = session.query(model.Collection)
+
+            for c in q:
+                crawl_single_c(c)
 
 
 class collection_report_cmd(object):
@@ -208,12 +238,12 @@ class collection_report_cmd(object):
     """
 
     def setup_parser(self, subparser):
-        parser = subparser.add_parser('collection report',
+        parser = subparser.add_parser('report',
                                       help="Print collection info",
                                       description=getdoc(self))
 
         parser.add_argument(
-            '--collection',
+            '--collection', '-c',
             help='Collection name'
         )
 

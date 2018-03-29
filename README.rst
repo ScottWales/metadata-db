@@ -13,16 +13,26 @@ metadata-db
 
 Create a new collection::
 
-    metadb collection --name my-data
+    metadb create --collection my-data /base/path
 
-Read files into the database::
+Update all files under the base path for a single collection::
 
-    metadb import /path/to/files
-    metadb import --collection my-data /path/to/files
+    metadb crawl --collection my-data
 
+Or for all of them::
+
+    metadb crawl
+
+Add or update individual files::
+
+    metadb import --collection my-data path/to/file
 
 Get a list of files matching given constraints::
 
     metadb list --file-attribute project_id CMIP5 \
                 --file-attribute experiment historical \
                 --variable-attribute standard_name precipitation_flux
+
+Report the size of each collection::
+
+    metadb report

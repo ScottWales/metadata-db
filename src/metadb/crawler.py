@@ -58,13 +58,13 @@ def crawl_recursive(session, basedir, collection=None, parent=None):
         assert parent is not None
 
     for entry in scandir(basedir):
-        print(entry.path)
         p = find_or_create(session, Path, basename=entry.name, parent=parent)
         p.collections.add(collection)
 
         try:
             p.update_stat(entry.stat())
             if entry.is_dir() and not entry.is_symlink():
+                print(entry.path)
                 crawl_recursive(session, entry.path, collection, parent)
         except PermissionError:
             # Not readable

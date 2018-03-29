@@ -27,7 +27,7 @@ setup(
         'test': [
             'pytest',
             'pytest-cov',
-            ],
+        ],
     },
     entry_points={
         'console_scripts': [
