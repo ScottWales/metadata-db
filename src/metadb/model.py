@@ -49,6 +49,11 @@ path_to_collection = Table('path_to_collection', Base.metadata,
                            Column('coll_id', Integer,
                                   ForeignKey('collection.id')),
                            )
+collection_root_path = Table('collection_root_path', Base.metadata,
+                             Column('path_id', Integer, ForeignKey('path.id')),
+                             Column('coll_id', Integer,
+                                    ForeignKey('collection.id')),
+                             )
 # Currently calculated by a CRE, may change to a materialised view at some point
 #
 # path_closure = Table('path_closure', Base.metadata,
@@ -75,6 +80,9 @@ class Collection(Base):
     #: :py:class:`Path` s in this collection
     paths = relationship('Path', secondary=path_to_collection,
                          back_populates='collections')
+
+    root_paths = relationship('Path', secondary=collection_root_path,
+                              collection_class=set)
 
 
 class Path(Base):

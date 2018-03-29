@@ -16,6 +16,7 @@
 from __future__ import print_function
 from metadb.cli import cli
 from metadb.model import *
+import pytest
 
 try:
     from unittest.mock import patch
@@ -23,16 +24,29 @@ except ImportError:
     from mock import patch
 
 
-def test_collection_cmd(session):
-    cli(argv='collection --name a'.split(), session=session)
+@pytest.fixture(scope='module')
+def sample_data(tmpdir_factory):
+    data = tmpdir_factory.mktemp('cli_data')
+    a = data.join('a')
+    a.write('hello')
+    return data
+
+
+def test_collection_create_cmd(session):
+    cli(argv='create --collection a'.split(), session=session)
 
     q = session.query(Collection).one()
     assert q.name == 'a'
 
-    cli(argv='collection --name a'.split(), session=session)
+    cli(argv='create -c a'.split(), session=session)
 
     q = session.query(Collection)
     assert q.count() == 1
+
+    cli(argv='create -c b /root/path /another/path'.split(), session=session)
+    q = session.query(Collection).filter_by(name='b').one()
+
+    assert len(q.root_paths) == 2
 
 
 def test_import_to_collection(session):
@@ -45,10 +59,24 @@ def test_import_to_collection(session):
     assert q.collections == set((c,))
 
 
-def test_crawler(session):
+def test_crawler(session, sample_data):
     with patch('metadb.cli.crawler.crawl_recursive') as crawler:
-        c = Collection(name='a')
-        session.add(c)
+        cli(argv=('create --collection a %s' %
+                  (sample_data)).split(), session=session)
+        c = session.query(Collection).one()
 
-        cli(argv='crawl --collection a foo'.split(), session=session)
-        crawler.assert_called_once_with(session, 'foo', collection=c)
+        cli(argv='crawl --collection a'.split(), session=session)
+        crawler.assert_called_once_with(
+            session, str(sample_data), collection=c)
+
+        crawler.reset_mock()
+
+        cli(argv='crawl'.split(), session=session)
+        crawler.assert_called_once_with(
+            session, str(sample_data), collection=c)
+
+
+def test_report(session, capsys, sample_data):
+    cli(argv=('create --collection a %s' % sample_data).split(), session=session)
+    cli(argv='crawl'.split(), session=session)
+    cli(argv='report'.split(), session=session)
