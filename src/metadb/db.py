@@ -81,7 +81,7 @@ def apply_migrations(engine):
     target = 'head'
 
     config = Config()
-    config.set_main_option("script_location", "alembic")
+    config.set_main_option("script_location", "metadb:migrations")
     script = ScriptDirectory.from_config(config)
 
     def upgrade_fn(rev, context):
