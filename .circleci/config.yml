@@ -30,6 +30,7 @@ run_pytest: &run_pytest
                 curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter
                 chmod +x cc-test-reporter
                 ./cc-test-reporter format-coverage --output "coverage/coverage.${CIRCLE_STAGE}.json"
+                cat "coverage/coverage.${CIRCLE_STAGE}.json"
         - store_test_results:
             path: test-report
         - store_artifacts:
@@ -96,6 +97,7 @@ jobs:
                     chmod +x cc-test-reporter
                     ./cc-test-reporter sum-coverage --parts 2 workspace/coverage.*.json -o coverage.json
                     ./cc-test-reporter upload-coverage --input coverage.json
+                    cat coverage.json
 
 workflows:
     version: 2
