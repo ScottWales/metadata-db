@@ -72,3 +72,6 @@ def crawl_recursive(session, basedir, collection=None, parent=None):
         except FileNotFoundError:
             # Broken symlink
             pass
+        except OSError:
+            # Other error (e.g. recursive symlink)
+            pass

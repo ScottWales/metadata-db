@@ -89,4 +89,8 @@ def test_crawler_errors(session, tmpdir):
     c = a.join('c')
     c.mksymlinkto('nowhere')
 
+    # Recursive links
+    d = a.join('d')
+    d.mksymlinkto('d')
+
     crawl_recursive(session, str(tmpdir), collection=col)

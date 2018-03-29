@@ -28,6 +28,7 @@ import os
 import glob
 import sys
 import pandas
+import time
 
 
 def cli(argv=sys.argv[1:], session=None):
@@ -218,6 +219,8 @@ class crawl_cmd(object):
         def crawl_single_c(c):
             for r in c.root_paths:
                 crawler.crawl_recursive(session, r.path, collection=c)
+                session.commit()
+            c.last_crawled = time.time()
 
         if args.collection is not None:
             c = (session.query(model.Collection)
@@ -226,7 +229,9 @@ class crawl_cmd(object):
 
             crawl_single_c(c)
         else:
-            q = session.query(model.Collection)
+            q = (session
+                 .query(model.Collection)
+                 .order_by(func.coalesce(model.Collection.last_crawled, -1.0)))
 
             for c in q:
                 crawl_single_c(c)
