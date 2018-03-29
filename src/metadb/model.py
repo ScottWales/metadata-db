@@ -84,6 +84,8 @@ class Collection(Base):
     root_paths = relationship('Path', secondary=collection_root_path,
                               collection_class=set)
 
+    last_crawled = Column(Float)
+
 
 class Path(Base):
     """
