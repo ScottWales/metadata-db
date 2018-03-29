@@ -1,10 +1,10 @@
 metadata-db
 ===========
 
-.. image:: https://img.shields.io/circleci/project/github/ScottWales/metadata-db.svg
+.. image:: https://img.shields.io/circleci/project/github/ScottWales/metadata-db/master.svg
    :target: https://circleci.com/gh/ScottWales/metadata-db
    :alt: Circle CI status
-.. image:: https://api.codeclimate.com/v1/badges/d5cc1000b0b6bc951ebb/test_coverage
+.. image:: https://img.shields.io/codeclimate/coverage/ScottWales/metadata-db.svg
    :target: https://codeclimate.com/github/ScottWales/metadata-db/test_coverage
    :alt: Test Coverage
 .. image:: https://img.shields.io/codeclimate/maintainability/ScottWales/metadata-db.svg
