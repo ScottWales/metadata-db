@@ -54,7 +54,9 @@ collection_root_path = Table('collection_root_path', Base.metadata,
                              Column('coll_id', Integer,
                                     ForeignKey('collection.id')),
                              )
-# Currently calculated by a CRE, may change to a materialised view at some point
+
+# Currently calculated by a CRE, may change to a materialised view at somei
+# point
 #
 # path_closure = Table('path_closure', Base.metadata,
 #                     Column('child_id', Integer, ForeignKey('path.id')),
