@@ -90,15 +90,17 @@ def crawl_recursive(session, basedir, collection, parent=None):
 def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
 
     children = {c.basename: c for c in parent.children}
-    new_children = {}
+    new_paths = {}
 
     for entry in scandir(basedir):
         if entry.name in children:
+            # Already exists, update
             p = children[entry.name]
             p.update_stat(entry.stat(), last_seen)
         else:
+            # Record the stat if readable
             try:
-                new_children[entry.name] = entry.stat()
+                new_paths[entry.name] = entry.stat()
             except PermissionError:
                 # Not readable
                 pass
@@ -109,17 +111,20 @@ def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
                 # Other error (e.g. recursive symlink)
                 pass
 
-    new_paths = []
-    for name, stat in six.iteritems(new_children):
+    # Convert the new stat()s to Path objects
+    new_children = {}
+    for name, stat in six.iteritems(new_paths):
         p = Path(basename=name, parent=parent)
         p.update_stat(stat, last_seen)
-        new_paths.append(p)
+        new_children[name] = p
 
-    session.add_all(new_paths)
+    # Add the new children
+    session.add_all(six.itervalues(new_children))
+    children.update(new_children)
 
     for entry in scandir(basedir):
         if entry.is_dir(follow_symlinks=False):
-            new_parent = session.query(Path).filter(Path.parent == parent, Path.basename == entry.name).one()
+            new_parent = children[entry.name]
             crawl_recursive_impl(session, entry.path, collection, new_parent, last_seen)
 
     print(basedir)
