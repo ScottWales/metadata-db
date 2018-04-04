@@ -124,10 +124,13 @@ class Path(Base):
                                collection_class=set,
                                back_populates='paths')
 
-    parent = relationship('Path', remote_side=[id], uselist=False, back_populates='children')
-    children = relationship('Path', remote_side=[parent_id], back_populates='parent')
+    parent = relationship('Path', remote_side=[
+                          id], uselist=False, back_populates='children')
+    children = relationship('Path', remote_side=[
+                            parent_id], back_populates='parent')
 
-    __table_args__ = (Index('parent_basename_idx', parent_id, basename, unique=True),)
+    __table_args__ = (Index('parent_basename_idx',
+                            parent_id, basename, unique=True),)
 
     @hybrid_property
     def path(self):
@@ -136,7 +139,7 @@ class Path(Base):
         """
         return '/'.join([c.basename for c in self.path_components])
 
-    def update_stat(self, stat, last_seen = None):
+    def update_stat(self, stat, last_seen=None):
         """
         Update the path's stat data
 

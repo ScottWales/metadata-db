@@ -20,6 +20,7 @@ import os
 import six
 import time
 from sqlalchemy.sql.expression import select, literal
+from sqlalchemy.orm import aliased
 
 """
 Filesystem crawler
@@ -49,21 +50,21 @@ def abspath(path):
 #     """
 #     Recursively crawl a directory, creating :py:class:`~metadb.model.Path` s in
 #     the database
-# 
+#
 #     :param session: SQLAlchemy session
 #     :param basedir: Base directory to crawl
 #     :param collection: Collection to put the found paths in
 #     """
 #     basedir = abspath(basedir)
-# 
+#
 #     if parent is None:
 #         parent = find_path(session, basedir)
 #         assert parent is not None
-# 
+#
 #     for entry in scandir(basedir):
 #         p = find_or_create(session, Path, basename=entry.name, parent=parent)
 #         p.collections.add(collection)
-# 
+#
 #         try:
 #             p.update_stat(entry.stat())
 #             if entry.is_dir() and not entry.is_symlink():
@@ -86,7 +87,26 @@ def crawl_recursive(session, basedir, collection, parent=None):
         parent = find_path(session, basedir)
         assert parent is not None
 
-    crawl_recursive_impl(session, basedir, collection, parent, time.time())
+    crawl_recursive_impl(session, basedir.encode(
+        'utf8'), collection, parent, time.time())
+    session.commit()
+
+    # Insert the collection
+    children = select(
+        [literal(collection.id).label('coll_id'),
+         literal(parent.id).label('path_id')]).cte(name='children', recursive=True)
+
+    p = aliased(children, 'c')
+
+    children = children.union_all(
+        select(
+            [literal(collection.id).label('coll_id'),
+             Path.id.label('path_id')]
+        ).where(Path.parent_id == p.c.path_id))
+
+    session.execute(path_to_collection.insert().from_select(
+        ['coll_id', 'path_id'], children))
+
 
 def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
 
@@ -126,11 +146,7 @@ def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
     for entry in scandir(basedir):
         if entry.is_dir(follow_symlinks=False):
             new_parent = children[entry.name]
-            crawl_recursive_impl(session, entry.path, collection, new_parent, last_seen)
-
-    session.commit()
-    child_coll = select([literal(collection.id).label('coll'), Path.id.label('path')]).where(Path.parent_id == parent.id)
-    session.execute(path_to_collection.insert().from_select(['coll_id', 'path_id'], child_coll))
+            crawl_recursive_impl(session, entry.path,
+                                 collection, new_parent, last_seen)
 
     print(basedir)
-
