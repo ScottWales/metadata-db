@@ -88,7 +88,7 @@ def crawl_recursive(session, basedir, collection, parent=None):
         assert parent is not None
 
     crawl_recursive_impl(session, basedir.encode(
-        'utf8'), collection, parent, time.time())
+        'utf8').decode('utf8', 'backslashreplace'), collection, parent, time.time())
     session.commit()
 
     # Insert the collection
