@@ -126,8 +126,10 @@ class Path(Base):
 
     parent = relationship('Path', remote_side=[
                           id], uselist=False, back_populates='children')
-    children = relationship('Path', remote_side=[
-                            parent_id], back_populates='parent')
+    children = relationship('Path',
+                            remote_side=[parent_id], 
+                            #collection_class=attribute_mapped_collection('basename'),
+                            back_populates='parent')
 
     __table_args__ = (Index('parent_basename_idx',
                             parent_id, basename, unique=True),)
