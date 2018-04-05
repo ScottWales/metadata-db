@@ -101,3 +101,17 @@ def test_crawler_errors(session, tmpdir):
     d.mksymlinkto('d')
 
     crawl_recursive(session, str(tmpdir), collection=col)
+
+def test_crawl_twice(session, tmpdir):
+    col = Collection(name='c')
+    session.add(col)
+    p = Path(basename=str(tmpdir))
+    session.add(p)
+
+    a = tmpdir.mkdir('a')
+
+    crawl_recursive(session, str(tmpdir), collection=col)
+    crawl_recursive(session, str(tmpdir), collection=col)
+
+    assert session.query(Path).join(Path.collections).filter(
+        Collection.id == col.id).count() == 2
