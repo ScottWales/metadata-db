@@ -75,7 +75,8 @@ def test_crawler_recursive(session, tmpdir):
     assert col in session.query(Path).filter_by(basename='a').one().collections
     assert col in session.query(Path).filter_by(basename='b').one().collections
     assert col in session.query(Path).filter_by(basename='c').one().collections
-    assert session.query(Path).join(Path.collections).filter(Collection.id == col.id).count() == 4
+    assert session.query(Path).join(Path.collections).filter(
+        Collection.id == col.id).count() == 4
 
 
 def test_crawler_errors(session, tmpdir):

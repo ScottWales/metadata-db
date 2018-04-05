@@ -93,28 +93,28 @@ def crawl_recursive(session, basedir, collection, parent=None):
 
     # Insert the collection
     children = (
-            select([
-                literal(collection.id).label('coll_id'),
-                literal(parent.id).label('path_id')
-                ])
-            .cte(name='children', recursive=True))
+        select([
+            literal(collection.id).label('coll_id'),
+            literal(parent.id).label('path_id')
+        ])
+        .cte(name='children', recursive=True))
 
     cte = children.alias(name='cte')
 
     children = (
-            children.union_all(
-                select([
-                    literal(collection.id).label('coll_id'),
-                    Path.id.label('path_id')
-                    ])
-                .where(Path.parent_id == cte.c.path_id))
-            .alias(name='foo'))
+        children.union_all(
+            select([
+                literal(collection.id).label('coll_id'),
+                Path.id.label('path_id')
+            ])
+            .where(Path.parent_id == cte.c.path_id))
+        .alias(name='foo'))
 
     session.execute(path_to_collection
-            .insert()
-            .from_select(
-                ['coll_id', 'path_id'],
-                select([children.c.coll_id, children.c.path_id])))
+                    .insert()
+                    .from_select(
+                        ['coll_id', 'path_id'],
+                        select([children.c.coll_id, children.c.path_id])))
 
 
 def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
