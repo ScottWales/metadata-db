@@ -102,6 +102,7 @@ def test_crawler_errors(session, tmpdir):
 
     crawl_recursive(session, str(tmpdir), collection=col)
 
+
 def test_crawl_twice(session, tmpdir):
     col = Collection(name='c')
     session.add(col)

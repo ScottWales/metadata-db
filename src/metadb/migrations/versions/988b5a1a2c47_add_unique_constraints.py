@@ -18,15 +18,20 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table('collection_root_path') as batch_op:
-        batch_op.create_unique_constraint('coll_root_uniq', ['path_id', 'coll_id'])
+        batch_op.create_unique_constraint(
+            'coll_root_uniq', ['path_id', 'coll_id'])
     with op.batch_alter_table('meta_to_attr') as batch_op:
-        batch_op.create_unique_constraint('meta_to_attr_uniq',  ['meta_id', 'attr_id'])
+        batch_op.create_unique_constraint(
+            'meta_to_attr_uniq',  ['meta_id', 'attr_id'])
     with op.batch_alter_table('path_to_collection') as batch_op:
-        batch_op.create_unique_constraint('path_to_coll_uniq',  ['path_id', 'coll_id'])
+        batch_op.create_unique_constraint(
+            'path_to_coll_uniq',  ['path_id', 'coll_id'])
     with op.batch_alter_table('var_to_attr') as batch_op:
-        batch_op.create_unique_constraint('var_to_attr_uniq',  ['var_id', 'attr_id'])
+        batch_op.create_unique_constraint(
+            'var_to_attr_uniq',  ['var_id', 'attr_id'])
     with op.batch_alter_table('var_to_dim') as batch_op:
-        batch_op.create_unique_constraint('var_to_dim_uniq',  ['var_id', 'dim_id'])
+        batch_op.create_unique_constraint(
+            'var_to_dim_uniq',  ['var_id', 'dim_id'])
 
 
 def downgrade():
