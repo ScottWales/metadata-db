@@ -46,40 +46,6 @@ def abspath(path):
         return os.path.abspath(str(path))
 
 
-# def crawl_recursive(session, basedir, collection=None, parent=None):
-#     """
-#     Recursively crawl a directory, creating :py:class:`~metadb.model.Path` s in
-#     the database
-#
-#     :param session: SQLAlchemy session
-#     :param basedir: Base directory to crawl
-#     :param collection: Collection to put the found paths in
-#     """
-#     basedir = abspath(basedir)
-#
-#     if parent is None:
-#         parent = find_path(session, basedir)
-#         assert parent is not None
-#
-#     for entry in scandir(basedir):
-#         p = find_or_create(session, Path, basename=entry.name, parent=parent)
-#         p.collections.add(collection)
-#
-#         try:
-#             p.update_stat(entry.stat())
-#             if entry.is_dir() and not entry.is_symlink():
-#                 print(entry.path)
-#                 crawl_recursive(session, entry.path, collection, parent)
-#         except PermissionError:
-#             # Not readable
-#             pass
-#         except FileNotFoundError:
-#             # Broken symlink
-#             pass
-#         except OSError:
-#             # Other error (e.g. recursive symlink)
-#             pass
-
 def crawl_recursive(session, basedir, collection, parent=None):
     basedir = os.path.abspath(str(basedir))
 
@@ -87,8 +53,13 @@ def crawl_recursive(session, basedir, collection, parent=None):
         parent = find_path(session, basedir)
         assert parent is not None
 
-    crawl_recursive_impl(session, basedir.encode(
-        'utf8').decode('utf8', 'backslashreplace'), collection, parent, time.time())
+    crawl_recursive_impl(
+            session,
+            basedir.encode('utf8').decode('utf8', 'backslashreplace'),
+            collection,
+            parent,
+            time.time())
+
     session.commit()
 
     # Insert the collection
