@@ -69,7 +69,14 @@ def test_crawler_recursive(session, tmpdir):
     b.write('hello')
 
     crawl_recursive(session, str(tmpdir), collection=col)
+    session.commit()
     assert session.query(Path).count() == 4
+    assert col in p.collections
+    assert col in session.query(Path).filter_by(basename='a').one().collections
+    assert col in session.query(Path).filter_by(basename='b').one().collections
+    assert col in session.query(Path).filter_by(basename='c').one().collections
+    assert session.query(Path).join(Path.collections).filter(
+        Collection.id == col.id).count() == 4
 
 
 def test_crawler_errors(session, tmpdir):

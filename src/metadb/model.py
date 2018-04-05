@@ -124,9 +124,15 @@ class Path(Base):
                                collection_class=set,
                                back_populates='paths')
 
-    parent = relationship('Path', remote_side=[id], uselist=False)
+    parent = relationship('Path', remote_side=[
+                          id], uselist=False, back_populates='children')
+    children = relationship('Path',
+                            remote_side=[parent_id],
+                            # collection_class=attribute_mapped_collection('basename'),
+                            back_populates='parent')
 
-    __table_args__ = (Index('parent_basename_idx', parent_id, basename),)
+    __table_args__ = (Index('parent_basename_idx',
+                            parent_id, basename, unique=True),)
 
     @hybrid_property
     def path(self):
@@ -135,7 +141,7 @@ class Path(Base):
         """
         return '/'.join([c.basename for c in self.path_components])
 
-    def update_stat(self, stat):
+    def update_stat(self, stat, last_seen=None):
         """
         Update the path's stat data
 
@@ -151,7 +157,10 @@ class Path(Base):
         self.uid = stat[st.ST_UID]
         self.gid = stat[st.ST_GID]
         self.size = stat[st.ST_SIZE]
-        self.last_seen = time.time()
+        if last_seen is not None:
+            self.last_seen = last_seen
+        else:
+            self.last_seen = time.time()
 
 
 class Metadata(Base):
