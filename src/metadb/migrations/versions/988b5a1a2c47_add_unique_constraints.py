@@ -26,7 +26,7 @@ def upgrade():
     with op.batch_alter_table('var_to_attr') as batch_op:
         batch_op.create_unique_constraint('var_to_attr_uniq',  ['var_id', 'attr_id'])
     with op.batch_alter_table('var_to_dim') as batch_op:
-        batch_op.create_unique_constraint('path_to_coll_uniq',  ['var_id', 'dim_id'])
+        batch_op.create_unique_constraint('var_to_dim_uniq',  ['var_id', 'dim_id'])
 
 
 def downgrade():
@@ -39,4 +39,4 @@ def downgrade():
     with op.batch_alter_table('var_to_attr') as batch_op:
         batch_op.drop_constraint('var_to_attr_uniq',   type_='unique')
     with op.batch_alter_table('var_to_dim') as batch_op:
-        batch_op.drop_constraint('path_to_coll_uniq',   type_='unique')
+        batch_op.drop_constraint('var_to_dim_uniq',   type_='unique')

@@ -51,7 +51,7 @@ var_to_dim = Table(
     Column('var_id', Integer, ForeignKey('variable.id')),
     Column('dim_id', Integer, ForeignKey('dimension.id')),
     Column('ndim', Integer),
-    UniqueConstraint('var_id', 'dim_id', name='path_to_coll_uniq'),
+    UniqueConstraint('var_id', 'dim_id', name='var_to_dim_uniq'),
 )
 path_to_collection = Table(
     'path_to_collection',
