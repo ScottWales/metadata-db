@@ -54,11 +54,11 @@ def crawl_recursive(session, basedir, collection, parent=None):
         assert parent is not None
 
     crawl_recursive_impl(
-            session,
-            basedir.encode('utf8').decode('utf8', 'backslashreplace'),
-            collection,
-            parent,
-            time.time())
+        session,
+        basedir.encode('utf8').decode('utf8', 'backslashreplace'),
+        collection,
+        parent,
+        time.time())
 
     session.commit()
 
@@ -81,11 +81,18 @@ def crawl_recursive(session, basedir, collection, parent=None):
             .where(Path.parent_id == cte.c.path_id))
         .alias(name='foo'))
 
-    session.execute(path_to_collection
-                    .insert()
-                    .from_select(
-                        ['coll_id', 'path_id'],
-                        select([children.c.coll_id, children.c.path_id])))
+    if session.bind.dialect.name == 'postgresql':
+        from sqlalchemy.dialects.postgresql import Insert
+        insert = Insert(path_to_collection).on_conflict_do_nothing()
+    else:
+        from sqlalchemy.sql import Insert
+        insert = Insert(path_to_collection).prefix_with(
+            'OR IGNORE', dialect='sqlite')
+
+    session.execute(insert.from_select(
+        ['coll_id', 'path_id'],
+        select([children.c.coll_id, children.c.path_id]))
+    )
 
 
 def crawl_recursive_impl(session, basedir, collection, parent, last_seen):

@@ -31,31 +31,44 @@ import time
 Base = declarative_base()
 
 # Many to many links
-var_to_attr = Table('var_to_attr', Base.metadata,
-                    Column('var_id', Integer, ForeignKey('variable.id')),
-                    Column('attr_id', Integer, ForeignKey('attribute.id')),
-                    )
-meta_to_attr = Table('meta_to_attr', Base.metadata,
-                     Column('meta_id', Integer, ForeignKey('metadata.id')),
-                     Column('attr_id', Integer, ForeignKey('attribute.id')),
-                     )
-var_to_dim = Table('var_to_dim', Base.metadata,
-                   Column('var_id', Integer, ForeignKey('variable.id')),
-                   Column('dim_id', Integer, ForeignKey('dimension.id')),
-                   Column('ndim', Integer),
-                   )
-path_to_collection = Table('path_to_collection', Base.metadata,
-                           Column('path_id', Integer, ForeignKey('path.id')),
-                           Column('coll_id', Integer,
-                                  ForeignKey('collection.id')),
-                           )
-collection_root_path = Table('collection_root_path', Base.metadata,
-                             Column('path_id', Integer, ForeignKey('path.id')),
-                             Column('coll_id', Integer,
-                                    ForeignKey('collection.id')),
-                             )
+var_to_attr = Table(
+    'var_to_attr',
+    Base.metadata,
+    Column('var_id', Integer, ForeignKey('variable.id')),
+    Column('attr_id', Integer, ForeignKey('attribute.id')),
+    UniqueConstraint('var_id', 'attr_id', name='var_to_attr_uniq'),
+)
+meta_to_attr = Table(
+    'meta_to_attr',
+    Base.metadata,
+    Column('meta_id', Integer, ForeignKey('metadata.id')),
+    Column('attr_id', Integer, ForeignKey('attribute.id')),
+    UniqueConstraint('meta_id', 'attr_id', name='meta_to_attr_uniq'),
+)
+var_to_dim = Table(
+    'var_to_dim',
+    Base.metadata,
+    Column('var_id', Integer, ForeignKey('variable.id')),
+    Column('dim_id', Integer, ForeignKey('dimension.id')),
+    Column('ndim', Integer),
+    UniqueConstraint('var_id', 'dim_id', name='var_to_dim_uniq'),
+)
+path_to_collection = Table(
+    'path_to_collection',
+    Base.metadata,
+    Column('path_id', Integer, ForeignKey('path.id')),
+    Column('coll_id', Integer, ForeignKey('collection.id')),
+    UniqueConstraint('path_id', 'coll_id', name='path_to_coll_uniq'),
+)
+collection_root_path = Table(
+    'collection_root_path',
+    Base.metadata,
+    Column('path_id', Integer, ForeignKey('path.id')),
+    Column('coll_id', Integer, ForeignKey('collection.id')),
+    UniqueConstraint('path_id', 'coll_id', name='coll_root_uniq'),
+)
 
-# Currently calculated by a CRE, may change to a materialised view at somei
+# Currently calculated by a CRE, may change to a materialised view at some
 # point
 #
 # path_closure = Table('path_closure', Base.metadata,
