@@ -378,6 +378,7 @@ def _path_path_property(path):
             ))
 
     sub = select([cte.c.basename]).order_by(cte.c.depth.desc())
+    sub.alias('basenames')
     q   = select([string_agg(sub.c.basename, '/')])
 
     return q
