@@ -55,7 +55,7 @@ def crawl_recursive(session, basedir, collection, parent=None):
 
     crawl_recursive_impl(
         session,
-        basedir.encode('utf8').decode('utf8', 'backslashreplace'),
+        basedir.encode('utf8'),
         collection,
         parent,
         time.time())
@@ -99,25 +99,32 @@ def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
 
     children = {c.basename: c for c in parent.children}
     new_paths = {}
+    total = 0
 
-    for entry in scandir(basedir):
-        if entry.name in children:
-            # Already exists, update
-            p = children[entry.name]
-            p.update_stat(entry.stat(), last_seen)
-        else:
-            # Record the stat if readable
-            try:
-                new_paths[entry.name] = entry.stat()
-            except PermissionError:
-                # Not readable
-                pass
-            except FileNotFoundError:
-                # Broken symlink
-                pass
-            except OSError:
-                # Other error (e.g. recursive symlink)
-                pass
+    try:
+        for entry in scandir(basedir):
+            name = entry.name.decode('utf8', 'replace')
+            if name in children:
+                # Already exists, update
+                p = children[name]
+                p.update_stat(entry.stat(), last_seen)
+                total += 1
+            else:
+                # Record the stat if readable
+                try:
+                    new_paths[name] = entry.stat()
+                except PermissionError:
+                    # Not readable
+                    pass
+                except FileNotFoundError:
+                    # Broken symlink
+                    pass
+                except OSError:
+                    # Other error (e.g. recursive symlink)
+                    pass
+    except PermissionError:
+        # Not readable
+        return 0
 
     # Convert the new stat()s to Path objects
     new_children = {}
@@ -130,10 +137,17 @@ def crawl_recursive_impl(session, basedir, collection, parent, last_seen):
     session.add_all(six.itervalues(new_children))
     children.update(new_children)
 
+    total += len(new_children)
+
     for entry in scandir(basedir):
         if entry.is_dir(follow_symlinks=False):
-            new_parent = children[entry.name]
-            crawl_recursive_impl(session, entry.path,
+            new_parent = children[entry.name.decode('utf8', 'replace')]
+            total += crawl_recursive_impl(session, entry.path,
                                  collection, new_parent, last_seen)
 
+            if total > 10000:
+                session.commit()
+                total = 0
+
     print(basedir)
+    return total

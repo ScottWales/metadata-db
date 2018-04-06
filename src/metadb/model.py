@@ -343,18 +343,42 @@ def compile(element, compiler, **kw):
 
 
 def _path_path_property(path):
-    parent = Path.__table__.alias(name='parent')
+    """
+    WITH RECURSIVE closure(depth, basename, parent) AS (
+        SELECT 0 as depth, path.basename as basename, path.parent_id as parent
+        from path
+        where path.id = 874758
+        union all
+        select depth + 1 as depth, path.basename as basename, path.parent_id as parent
+        from path join closure on closure.parent = path.id
+    )   
+    select group_concat(basename, '/') from (
+        select basename from closure order by depth desc
+    )
+    """
 
-    sub = (select([path_closure.c.child_id, parent.c.basename])
-           .select_from(parent
-                        .join(path_closure,
-                              parent.c.id == path_closure.c.parent_id))
-           .order_by(path_closure.c.depth.desc())
-           .alias('foo'))
+    cte_path = aliased(Path)
 
-    q = (select([string_agg(sub.c.basename, '/')])
-         .group_by(sub.c.child_id)
-         .where(sub.c.child_id == path.id))
+    cte = (select([
+                cte_path.parent_id.label('parent_id'),
+                cte_path.basename.label('basename'),
+                literal(0).label('depth'),
+                ])
+                .where(cte_path.id == path.id)
+                .correlate(Path)
+                .cte(name='path_cte',recursive=True)
+                )
+    cte = (cte.union_all(
+        select([
+            cte_path.parent_id.label('parent_id'),
+            cte_path.basename.label('basename'),
+            (cte.c.depth + 1).label('depth'),
+            ])
+            .where(cte.c.parent_id == cte_path.id)
+            ))
+
+    sub = select([cte.c.basename]).order_by(cte.c.depth.desc())
+    q   = select([string_agg(sub.c.basename, '/')])
 
     return q
 
