@@ -377,8 +377,9 @@ def _path_path_property(path):
             .where(cte.c.parent_id == cte_path.id)
             ))
 
-    sub = select([cte.c.basename]).order_by(cte.c.depth.desc())
-    sub.alias('basenames')
+    sub = (select([cte.c.basename])
+            .order_by(cte.c.depth.desc())
+            .alias(name='basenames'))
     q   = select([string_agg(sub.c.basename, '/')])
 
     return q
