@@ -21,7 +21,7 @@ from sqlalchemy import ForeignKey, Table, UniqueConstraint, text, Index
 from sqlalchemy.orm import relationship, aliased, column_property
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.orderinglist import OrderingList
-from sqlalchemy import select, func, alias
+from sqlalchemy import select, func, alias, join
 from sqlalchemy.sql.expression import literal, FunctionElement
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.compiler import compiles
@@ -360,24 +360,28 @@ def _path_path_property(path):
     cte_path = aliased(Path)
 
     cte = (select([
+                cte_path.id.label('target_id'),
+                cte_path.id.label('id'),
                 cte_path.parent_id.label('parent_id'),
                 cte_path.basename.label('basename'),
                 literal(0).label('depth'),
                 ])
-                .where(cte_path.id == path.id)
-                .correlate(Path)
                 .cte(name='path_cte',recursive=True)
                 )
     cte = (cte.union_all(
         select([
+            cte.c.target_id,
+            cte_path.id.label('id'),
             cte_path.parent_id.label('parent_id'),
             cte_path.basename.label('basename'),
             (cte.c.depth + 1).label('depth'),
             ])
-            .where(cte.c.parent_id == cte_path.id)
+            .select_from(cte.join(cte_path, cte.c.parent_id == cte_path.id))
             ))
 
-    sub = (select([cte.c.basename])
+    sub = (select([cte.c.id, cte.c.basename])
+            .where(cte.c.target_id == path.id)
+            .correlate(path)
             .order_by(cte.c.depth.desc())
             .alias(name='basenames'))
     q   = select([string_agg(sub.c.basename, '/')])

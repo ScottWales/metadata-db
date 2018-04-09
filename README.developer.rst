@@ -37,3 +37,16 @@ automatically applied to the database upon connecting
 ::
 
     alembic revision --autogenerate -m "Change message"
+
+Create a test Postgresql database using vagrant
+===
+
+::
+
+    vagrant up
+
+    TEST_DATABASE=postgresql://test:test@localhost/test py.test
+
+Use the database for CLI commands with the flag::
+
+    --database postgresql://test:test@localhost/metadb

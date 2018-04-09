@@ -26,6 +26,14 @@
         become: yes
         become_user: postgres
 
+      - name: Create metadb database
+        postgresql_db:
+            name: metadb
+            owner: test
+            state: present
+        become: yes
+        become_user: postgres
+
       - name: Allow access
         copy:
             dest: /etc/postgresql/9.5/main/pg_hba.conf
