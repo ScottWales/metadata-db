@@ -1,0 +1,52 @@
+---
+- hosts: all
+  tasks:
+      - name: Install postgres
+        apt:
+            name: 
+                - postgresql
+                - libpq-dev
+                - python-psycopg2
+            state: present
+        become: yes
+
+      - name: Create database user
+        postgresql_user:
+            name: test
+            password: test
+            state: present
+        become: yes
+        become_user: postgres
+
+      - name: Create test database
+        postgresql_db:
+            name: test
+            owner: test
+            state: present
+        become: yes
+        become_user: postgres
+
+      - name: Allow access
+        copy:
+            dest: /etc/postgresql/9.5/main/pg_hba.conf
+            content: |
+                local all postgres peer
+                local all all      peer
+                host  all all      0.0.0.0/0 md5
+        notify: restart postgresql
+        become: yes
+
+      - name: Listen to all
+        lineinfile:
+            path: /etc/postgresql/9.5/main/postgresql.conf
+            regexp: '^#\?listen_addresses\s*='
+            line: "listen_addresses='*'"
+        notify: restart postgresql
+        become: yes
+
+  handlers:
+      - name: restart postgresql
+        service:
+            name: postgresql
+            state: restarted
+        become: yes
