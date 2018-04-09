@@ -138,3 +138,13 @@ def test_cte(session):
 
     assert (c.id, b.id, 1) in r
     assert (c.id, a.id, 2) in r
+
+def test_path_basename(session):
+    a = Path(basename='a')
+    b = Path(basename='b', parent=a)
+
+    session.add(b)
+    session.commit()
+
+    assert b.path == 'a/b'
+    

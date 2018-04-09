@@ -16,6 +16,7 @@
 from __future__ import print_function
 from metadb.crawler import *
 from metadb.model import Collection, Path
+import metadb.query as query
 
 
 def test_crawler_updates(session, tmpdir):
@@ -50,7 +51,7 @@ def test_crawler_updates(session, tmpdir):
     a.write('goodbye')
     crawl_recursive(session, str(tmpdir), collection=c)
 
-    p = session.query(Path).filter(Path.path == str(a)).one()
+    p = query.find_path(session, str(a))
 
     # The size should have changed
     assert p.size == len('goodbye')
