@@ -361,7 +361,6 @@ def _path_path_property(path):
 
     cte = (select([
                 cte_path.id.label('target_id'),
-                cte_path.id.label('id'),
                 cte_path.parent_id.label('parent_id'),
                 cte_path.basename.label('basename'),
                 literal(0).label('depth'),
@@ -371,7 +370,6 @@ def _path_path_property(path):
     cte = (cte.union_all(
         select([
             cte.c.target_id,
-            cte_path.id.label('id'),
             cte_path.parent_id.label('parent_id'),
             cte_path.basename.label('basename'),
             (cte.c.depth + 1).label('depth'),
@@ -379,7 +377,7 @@ def _path_path_property(path):
             .select_from(cte.join(cte_path, cte.c.parent_id == cte_path.id))
             ))
 
-    sub = (select([cte.c.id, cte.c.basename])
+    sub = (select([cte.c.basename])
             .where(cte.c.target_id == path.id)
             .correlate(path)
             .order_by(cte.c.depth.desc())
